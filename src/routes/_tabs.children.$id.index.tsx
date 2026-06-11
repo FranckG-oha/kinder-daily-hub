@@ -60,7 +60,7 @@ function ChildPage() {
               <p className="text-sm font-semibold">Allergies</p>
             </div>
             <div className="mt-2 flex flex-wrap gap-2">
-              {child.allergies.map((a) => (
+              {child.allergies.map((a: string) => (
                 <span key={a} className="rounded-full bg-card px-3 py-1 text-xs font-medium">
                   {a}
                 </span>
@@ -74,7 +74,7 @@ function ChildPage() {
             Tuteurs
           </h2>
           <ul className="mt-3 divide-y divide-border/60">
-            {child.guardians.map((g) => (
+            {child.guardians.map((g: { name: string; phone: string; relation: string }) => (
               <li key={g.phone} className="flex items-center gap-3 py-3">
                 <AvatarInitial name={g.name} size={36} />
                 <div className="flex-1">
