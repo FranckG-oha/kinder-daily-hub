@@ -230,3 +230,152 @@ export function ageFromBirthdate(iso: string): string {
   const m = months % 12;
   return y > 0 ? `${y} an${y > 1 ? "s" : ""} ${m} m` : `${m} mois`;
 }
+
+// ─── COORDINATOR (Age-Group) layer ──────────────────────
+// The educator is an Age-Group Coordinator overseeing several
+// classrooms, each led by a teacher.
+
+export type RoomFlower = "sunflower" | "buttercup" | "daisy";
+
+export type CoordClassroom = {
+  id: string;
+  name: string;
+  ageBand: string;
+  flower: RoomFlower;
+  lead: { name: string; avatar: string; role: string };
+  present: number;
+  enrolled: number;
+  reportsDone: number;
+  reportsTotal: number;
+  alert?: { title: string; body: string };
+};
+
+export const coordinator = {
+  name: "Amara Okafor",
+  role: "Age-Group Coordinator",
+  group: "Crèche Group",
+  cycle: "CYCLE_0" as Cycle,
+  avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Amara",
+};
+
+export const coordClassrooms: CoordClassroom[] = [
+  {
+    id: "sunflower",
+    name: "Sunflower Room",
+    ageBand: "Pre-K • Age 3-4",
+    flower: "sunflower",
+    lead: { name: "Sarah Jenkins", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah", role: "Lead Teacher" },
+    present: 18,
+    enrolled: 20,
+    reportsDone: 14,
+    reportsTotal: 15,
+  },
+  {
+    id: "buttercup",
+    name: "Buttercup Room",
+    ageBand: "Toddlers • Age 2-3",
+    flower: "buttercup",
+    lead: { name: "Michael Chen", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael", role: "Lead Teacher" },
+    present: 14,
+    enrolled: 15,
+    reportsDone: 12,
+    reportsTotal: 15,
+    alert: { title: "Allergy update", body: "New peanut allergy logged for Leo T." },
+  },
+  {
+    id: "daisy",
+    name: "Daisy Room",
+    ageBand: "Infants • Age 1-2",
+    flower: "daisy",
+    lead: { name: "Emma Thompson", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma", role: "Lead Teacher" },
+    present: 6,
+    enrolled: 7,
+    reportsDone: 12,
+    reportsTotal: 12,
+  },
+];
+
+export const getCoordClassroom = (id: string) => coordClassrooms.find((c) => c.id === id);
+
+export type PriorityAlert = {
+  id: string;
+  kind: "fever" | "missing" | "pickup";
+  title: string;
+  body: string;
+  ago: string;
+  action: string;
+};
+
+export const priorityAlerts: PriorityAlert[] = [
+  { id: "pa1", kind: "fever", title: "Fever flagged", body: "Leo M. (Sunflower Room) logged temp 38.2°C.", ago: "10m ago", action: "Review" },
+  { id: "pa2", kind: "missing", title: "Missing reports", body: "3 sleep logs pending in Buttercup Room.", ago: "1h ago", action: "Remind staff" },
+  { id: "pa3", kind: "pickup", title: "Late pickup", body: "Parent notified for Mia K. (Daisy Room).", ago: "2h ago", action: "View" },
+];
+
+export type EvalStatus = "ready" | "progress" | "notStarted";
+
+export type ClassroomEval = {
+  id: string;
+  name: string;
+  lead: string;
+  band: string;
+  avatar: string;
+  status: EvalStatus;
+  progress: number;
+};
+
+export const evaluationPeriod = "Q1 2025 Coordination";
+
+export const classroomEvals: ClassroomEval[] = [
+  { id: "sunflower", name: "Sunflower Room", lead: "Sarah Jenkins", band: "Pre-K", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah", status: "ready", progress: 100 },
+  { id: "buttercup", name: "Buttercup Room", lead: "Michael Chen", band: "Toddlers", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael", status: "progress", progress: 80 },
+  { id: "daisy", name: "Daisy Room", lead: "Emma Thompson", band: "Infants", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma", status: "notStarted", progress: 0 },
+  { id: "acorn", name: "Little Acorns", lead: "Marcus Lee", band: "Pre-K", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Marcus", status: "ready", progress: 100 },
+];
+
+export const evalStatusLabel: Record<EvalStatus, string> = {
+  ready: "Ready to validate",
+  progress: "In progress",
+  notStarted: "Not started",
+};
+
+export type TeacherThread = {
+  id: string;
+  name: string;
+  avatar: string;
+  room: string;
+  role: string;
+  reportsDone: number;
+  reportsTotal: number;
+  preview: string;
+  fromMe?: boolean;
+  time: string;
+};
+
+export const teacherThreads: TeacherThread[] = [
+  { id: "tt-sarah", name: "Sarah Jenkins", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah", room: "Sunflower Room", role: "Lead Teacher", reportsDone: 14, reportsTotal: 15, preview: "Just wrapping up the morning sensory activities. Leo had a great time with the water table.", time: "10:42 AM" },
+  { id: "tt-michael", name: "Michael Chen", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael", room: "Buttercup Room", role: "Lead Teacher", reportsDone: 12, reportsTotal: 15, preview: "Thanks, the photos from today's outdoor play are uploaded.", fromMe: true, time: "Yesterday" },
+  { id: "tt-emma", name: "Emma Thompson", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma", room: "Daisy Room", role: "Lead Teacher", reportsDone: 12, reportsTotal: 12, preview: "All infants down for nap. Quiet afternoon ahead.", time: "Yesterday" },
+];
+
+export const teacherActionNeeded = {
+  room: "Buttercup Room",
+  time: "9:00 AM",
+  body: "Michael requested assistance with the new arts supplies delivery. Can someone coordinate drop-off?",
+};
+
+export type RosterChild = {
+  id: string;
+  name: string;
+  avatar: string;
+  status: AttendanceStatus;
+  detail: string;
+};
+
+export const sunflowerRoster: RosterChild[] = [
+  { id: "rc-lea", name: "Léa Dubois", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=LeaD", status: "present", detail: "Checked in by Parent at 8:15 AM" },
+  { id: "rc-noah", name: "Noah Smith", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=NoahS", status: "present", detail: "Checked in by Teacher at 8:30 AM" },
+  { id: "rc-emma", name: "Emma Johnson", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=EmmaJ", status: "absent", detail: "Reported sick by Parent" },
+  { id: "rc-oliver", name: "Oliver Davis", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=OliverD", status: "late", detail: "Expected 9:30 AM" },
+  { id: "rc-ava", name: "Ava Martin", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=AvaM", status: "present", detail: "Checked in by Parent at 8:05 AM" },
+];

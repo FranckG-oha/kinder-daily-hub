@@ -1,17 +1,19 @@
 import { Link } from "@tanstack/react-router";
 import { Icon } from "./icon";
-import { me } from "@/lib/mock";
+import { coordinator } from "@/lib/mock";
 
-export function AppHeader() {
+export function AppHeader({ showAvatar = true }: { showAvatar?: boolean }) {
   return (
-    <header className="sticky top-0 z-30 bg-secondary/80 backdrop-blur">
+    <header className="sticky top-0 z-30 bg-background/80 backdrop-blur">
       <div className="mx-auto flex max-w-[440px] items-center justify-between px-5 py-4">
         <Link to="/profile" aria-label="Mon profil" className="flex items-center gap-3">
-          <img
-            src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${me.firstName}`}
-            alt=""
-            className="h-10 w-10 rounded-full object-cover bg-card"
-          />
+          {showAvatar && (
+            <img
+              src={coordinator.avatar}
+              alt=""
+              className="h-10 w-10 rounded-full object-cover bg-card"
+            />
+          )}
           <span className="font-display text-lg font-extrabold tracking-tight text-primary">
             Digital Sanctuary
           </span>

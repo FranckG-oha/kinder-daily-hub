@@ -3,220 +3,270 @@ import { motion } from "framer-motion";
 import { AppHeader } from "@/components/app-header";
 import { Page } from "@/components/page";
 import { Icon } from "@/components/icon";
-import { attendanceToday, children, myClassroom, reportsToday } from "@/lib/mock";
+import { RoomBadge } from "@/components/room-badge";
+import { coordClassrooms, coordinator, priorityAlerts } from "@/lib/mock";
 
 export const Route = createFileRoute("/_tabs/")({
   head: () => ({
     meta: [
-      { title: "Dashboard — Digital Sanctuary" },
-      { name: "description", content: "Cockpit du jour : présences, alertes et progression de la classe." },
-      { property: "og:title", content: "Dashboard — Digital Sanctuary" },
-      { property: "og:description", content: "Cockpit quotidien de l'éducatrice Montessori." },
+      { title: "Overview — Digital Sanctuary" },
+      { name: "description", content: "Coordinator overview: attendance, health alerts and report progress across classrooms." },
+      { property: "og:title", content: "Overview — Digital Sanctuary" },
+      { property: "og:description", content: "Age-group coordinator daily cockpit." },
     ],
   }),
-  component: TodayPage,
+  component: OverviewPage,
 });
 
-function TodayPage() {
-  const present = Object.values(attendanceToday).filter((s) => s === "present").length;
-  const absent = Object.values(attendanceToday).filter((s) => s === "absent").length;
-  const total = children.length;
-  const submitted = reportsToday.filter((r) => r.status === "submitted").length;
-  const photoCount = 8;
+function OverviewPage() {
+  const present = coordClassrooms.reduce((s, c) => s + c.present, 0);
+  const enrolled = coordClassrooms.reduce((s, c) => s + c.enrolled, 0);
+  const reportsDone = coordClassrooms.reduce((s, c) => s + c.reportsDone, 0);
+  const reportsTotal = coordClassrooms.reduce((s, c) => s + c.reportsTotal, 0);
+  const healthAlerts = 2;
 
-  const todayLabel = new Date().toLocaleDateString("en-US", {
-    month: "short",
+  const dateLabel = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
     day: "numeric",
   });
-
-  const present3 = children.filter((c) => attendanceToday[c.id] === "present").slice(0, 4);
 
   return (
     <>
       <AppHeader />
       <Page>
-        <section className="rounded-3xl bg-card p-6 shadow-card">
-          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Today • {todayLabel}
-          </p>
-          <h1 className="mt-2 font-display text-4xl font-extrabold leading-tight tracking-tight text-foreground">
-            {myClassroom.name}
-          </h1>
-          <div className="mt-5 flex gap-3">
-            <div className="flex flex-1 flex-col items-center rounded-2xl bg-secondary py-4">
-              <span className="font-display text-3xl font-bold text-primary">
-                {present}/{total}
-              </span>
-              <span className="mt-1 text-xs text-muted-foreground">Present</span>
-            </div>
-            <div className="flex flex-1 flex-col items-center rounded-2xl bg-secondary py-4">
-              <span className="font-display text-3xl font-bold text-[oklch(0.55_0.18_45)]">
-                {absent}
-              </span>
-              <span className="mt-1 text-xs text-muted-foreground">Absent</span>
-            </div>
+        <section className="flex items-center gap-3">
+          <img
+            src={coordinator.avatar}
+            alt=""
+            className="h-12 w-12 rounded-full bg-card object-cover"
+          />
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              {dateLabel}
+            </p>
+            <h1 className="font-display text-xl font-extrabold tracking-tight text-primary">
+              {coordinator.group}
+            </h1>
           </div>
         </section>
 
-        <section className="mt-4 space-y-3">
-          <div className="flex items-start gap-4 rounded-2xl bg-container-peach/70 p-4">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-card text-on-container-peach">
-              <Icon name="medical_services" filled size={22} />
-            </div>
-            <div>
-              <h3 className="font-display text-base font-bold text-on-container-peach">
-                Medication Due
-              </h3>
-              <p className="mt-0.5 text-sm text-on-container-peach/80">
-                Inhalateur de Léo à 11:30.
-              </p>
-            </div>
-          </div>
-          <div className="flex items-start gap-4 rounded-2xl bg-secondary p-4">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-card text-primary">
-              <Icon name="schedule" filled size={22} />
-            </div>
-            <div>
-              <h3 className="font-display text-base font-bold">Late Collection</h3>
-              <p className="mt-0.5 text-sm text-muted-foreground">
-                Les parents de Mia auront 15 min de retard.
-              </p>
-            </div>
-          </div>
-        </section>
+        <h2 className="mt-6 font-display text-2xl font-extrabold tracking-tight">
+          Today&apos;s Overview
+        </h2>
 
-        <section className="mt-6 rounded-3xl bg-secondary p-5">
+        <div className="mt-4 space-y-3">
+          <StatCard
+            icon="groups"
+            label="Present"
+            tone="primary"
+            value={`${present}`}
+            suffix={` / ${enrolled}`}
+          />
+          <StatCard
+            icon="medical_services"
+            label="Health Alerts"
+            tone="danger"
+            value={`${healthAlerts}`}
+          />
+          <StatCard
+            icon="task_alt"
+            label="Daily Reports"
+            tone="success"
+            value={`${reportsDone}`}
+            suffix={` / ${reportsTotal}`}
+            progress={Math.round((reportsDone / reportsTotal) * 100)}
+          />
+        </div>
+
+        <section className="mt-8">
           <div className="flex items-center justify-between">
-            <h2 className="font-display text-xl font-bold">Attendance</h2>
-            <Link
-              to="/children"
-              className="rounded-full bg-card px-4 py-1.5 text-xs font-semibold text-primary shadow-card"
-            >
-              Mark All Present
+            <h2 className="font-display text-2xl font-extrabold tracking-tight">
+              My Classrooms
+            </h2>
+            <Link to="/classes" className="text-sm font-semibold text-primary">
+              View all
             </Link>
           </div>
-          <ul className="mt-4 flex gap-4 overflow-x-auto pb-2">
-            {present3.map((c) => (
-              <li key={c.id} className="flex min-w-[64px] flex-col items-center gap-1.5">
-                <div className="relative">
-                  <img
-                    src={c.avatar}
-                    alt={c.firstName}
-                    className="h-14 w-14 rounded-full border-4 border-card bg-card object-cover"
-                  />
-                  <span className="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-accent-foreground">
-                    <Icon name="check" filled size={12} />
-                  </span>
-                </div>
-                <span className="text-xs font-medium">{c.firstName}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
 
-        <section className="mt-6">
-          <h2 className="mb-3 font-display text-xl font-bold">Today's Schedule</h2>
-          <ol className="relative space-y-5 border-l-2 border-secondary pl-6">
-            <ScheduleItem time="09:00 AM" title="Morning Circle" body="Songs and weather check." past />
-            <ScheduleItem
-              time="10:30 AM • NOW"
-              title="Story Time"
-              body="Reading 'The Very Hungry Caterpillar'."
-              current
-            />
-            <ScheduleItem time="12:00 PM" title="Lunch & Nap" body="Quiet time in the sunflower room." />
-          </ol>
-        </section>
-
-        <section className="mt-6 rounded-3xl bg-card p-5 shadow-card">
-          <h2 className="font-display text-xl font-bold">Daily Progress</h2>
           <div className="mt-4 space-y-4">
-            <ProgressRow label="Daily Reports Sent" value={submitted} total={total} />
-            <ProgressRow label="Photos Shared" value={photoCount} total={total} />
+            {coordClassrooms.map((c) => {
+              const pct = Math.round((c.reportsDone / c.reportsTotal) * 100);
+              return (
+                <Link
+                  key={c.id}
+                  to="/classes/$id"
+                  params={{ id: c.id }}
+                  className="block rounded-3xl bg-card p-5 shadow-card transition-transform active:scale-[0.99]"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <RoomBadge flower={c.flower} />
+                      <div>
+                        <h3 className="font-display text-lg font-bold leading-tight">
+                          {c.name}
+                        </h3>
+                        <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
+                          <Icon name="person" size={14} />
+                          Lead: {c.lead.name}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 flex items-stretch gap-4">
+                    <div className="flex flex-col">
+                      <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                        Attendance
+                      </span>
+                      <span className="font-display text-lg font-bold text-primary">
+                        {c.present}
+                        <span className="text-muted-foreground">/{c.enrolled}</span>
+                      </span>
+                    </div>
+                    <div className="w-px bg-border" />
+                    <div className="flex flex-col">
+                      <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                        Reports
+                      </span>
+                      <span className="font-display text-lg font-bold text-[var(--status-present)]">
+                        {c.reportsDone}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="mt-4">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">Report progress</span>
+                      <span
+                        className={
+                          "font-bold " +
+                          (pct >= 100
+                            ? "text-[var(--status-present)]"
+                            : pct < 50
+                              ? "text-[var(--status-late)]"
+                              : "text-primary")
+                        }
+                      >
+                        {pct}%
+                      </span>
+                    </div>
+                    <div className="mt-2 h-2 overflow-hidden rounded-full bg-secondary">
+                      <div
+                        className="h-full rounded-full"
+                        style={{
+                          width: `${pct}%`,
+                          background:
+                            pct >= 100
+                              ? "var(--status-present)"
+                              : pct < 50
+                                ? "var(--status-late)"
+                                : "var(--primary)",
+                        }}
+                      />
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </section>
 
-        <section className="mt-4 grid grid-cols-2 gap-3">
-          <QuickAction icon="add_a_photo" label="Add Photo" />
-          <QuickAction icon="restaurant" label="Log Meal" />
-          <QuickAction icon="bedtime" label="Log Sleep" />
-          <QuickAction icon="edit_note" label="Write Note" />
+        <section className="mt-8">
+          <h2 className="font-display text-2xl font-extrabold tracking-tight">
+            Priority Alerts
+          </h2>
+          <div className="mt-4 space-y-3">
+            {priorityAlerts.map((a) => (
+              <PriorityAlertRow key={a.id} alert={a} />
+            ))}
+          </div>
         </section>
       </Page>
     </>
   );
 }
 
-function ScheduleItem({
-  time,
-  title,
-  body,
-  past,
-  current,
-}: {
-  time: string;
-  title: string;
-  body: string;
-  past?: boolean;
-  current?: boolean;
-}) {
-  return (
-    <li className="relative">
-      <span
-        className={
-          "absolute -left-[31px] top-1.5 flex h-5 w-5 items-center justify-center rounded-full border-4 border-background " +
-          (current ? "bg-primary shadow-[0_0_0_4px_color-mix(in_oklab,var(--primary)_20%,transparent)]" : "bg-secondary")
-        }
-      >
-        {current && <span className="h-1.5 w-1.5 rounded-full bg-card" />}
-      </span>
-      <div
-        className={
-          "rounded-2xl p-4 " +
-          (current ? "bg-secondary" : "bg-card shadow-card " + (past ? "opacity-70" : ""))
-        }
-      >
-        <p
-          className={
-            "text-xs font-semibold " +
-            (current ? "text-primary" : "text-muted-foreground")
-          }
-        >
-          {time}
-        </p>
-        <h3 className="mt-1 font-display text-lg font-bold">{title}</h3>
-        <p className="mt-1 text-sm text-muted-foreground">{body}</p>
-      </div>
-    </li>
-  );
-}
+const toneStyles = {
+  primary: { wash: "color-mix(in oklab, var(--primary) 12%, var(--card))", icon: "var(--primary)", text: "text-primary" },
+  danger: { wash: "color-mix(in oklab, var(--destructive) 12%, var(--card))", icon: "var(--destructive)", text: "text-destructive" },
+  success: { wash: "color-mix(in oklab, var(--status-present) 14%, var(--card))", icon: "var(--status-present)", text: "text-[var(--status-present)]" },
+} as const;
 
-function ProgressRow({ label, value, total }: { label: string; value: number; total: number }) {
-  const pct = Math.round((value / total) * 100);
+function StatCard({
+  icon,
+  label,
+  value,
+  suffix,
+  tone,
+  progress,
+}: {
+  icon: string;
+  label: string;
+  value: string;
+  suffix?: string;
+  tone: keyof typeof toneStyles;
+  progress?: number;
+}) {
+  const t = toneStyles[tone];
   return (
-    <div>
-      <div className="flex items-baseline justify-between">
-        <span className="text-sm font-medium">{label}</span>
-        <span className="text-sm font-bold text-primary">
-          {value} / {total}
-        </span>
+    <div className="rounded-3xl bg-card p-5 shadow-card">
+      <div className="flex items-center justify-between">
+        <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <span
+            className="flex h-8 w-8 items-center justify-center rounded-xl"
+            style={{ background: t.wash, color: t.icon }}
+          >
+            <Icon name={icon} filled size={18} />
+          </span>
+          {label}
+        </p>
       </div>
-      <div className="mt-2 h-2 overflow-hidden rounded-full bg-secondary">
-        <div className="h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
-      </div>
+      <p className="mt-3 font-display text-3xl font-extrabold tracking-tight">
+        <span className={t.text}>{value}</span>
+        {suffix && <span className="text-base font-bold text-muted-foreground">{suffix}</span>}
+      </p>
+      {typeof progress === "number" && (
+        <div className="mt-3 h-2 overflow-hidden rounded-full bg-secondary">
+          <div
+            className="h-full rounded-full"
+            style={{ width: `${progress}%`, background: "var(--status-present)" }}
+          />
+        </div>
+      )}
     </div>
   );
 }
 
-function QuickAction({ icon, label }: { icon: string; label: string }) {
+const alertConfig = {
+  fever: { icon: "thermostat", color: "var(--destructive)", wash: "color-mix(in oklab, var(--destructive) 12%, var(--card))" },
+  missing: { icon: "warning", color: "var(--status-late)", wash: "color-mix(in oklab, var(--status-late) 16%, var(--card))" },
+  pickup: { icon: "schedule", color: "var(--primary)", wash: "color-mix(in oklab, var(--primary) 12%, var(--card))" },
+} as const;
+
+function PriorityAlertRow({ alert }: { alert: (typeof priorityAlerts)[number] }) {
+  const c = alertConfig[alert.kind];
   return (
-    <motion.button
-      whileTap={{ scale: 0.96 }}
-      type="button"
-      className="flex flex-col items-center gap-2 rounded-2xl bg-card p-5 text-primary shadow-card"
+    <motion.div
+      whileTap={{ scale: 0.99 }}
+      className="rounded-2xl bg-card p-4 shadow-card"
     >
-      <Icon name={icon} filled size={28} />
-      <span className="font-display text-sm font-bold text-foreground">{label}</span>
-    </motion.button>
+      <div className="flex items-start gap-3">
+        <span
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+          style={{ background: c.wash, color: c.color }}
+        >
+          <Icon name={c.icon} filled size={20} />
+        </span>
+        <div className="flex-1">
+          <div className="flex items-start justify-between gap-2">
+            <h3 className="font-display text-sm font-bold">{alert.title}</h3>
+            <span className="shrink-0 text-[11px] text-muted-foreground">{alert.ago}</span>
+          </div>
+          <p className="mt-0.5 text-sm text-muted-foreground">{alert.body}</p>
+          <button className="mt-2 text-sm font-semibold text-primary">{alert.action}</button>
+        </div>
+      </div>
+    </motion.div>
   );
 }
