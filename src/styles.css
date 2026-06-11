@@ -85,45 +85,46 @@
 
 :root {
   --radius: 1.25rem;
-  /* Mockup: surface #f9f9ff, on-surface #24324f */
-  --background: oklch(0.985 0.008 270);
-  --foreground: oklch(0.26 0.045 265);
+  /* Charte: Neutral surface #F9F9FF, deep slate text #24324F */
+  --background: oklch(0.985 0.006 285);
+  --foreground: oklch(0.31 0.04 265);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.26 0.045 265);
+  --card-foreground: oklch(0.31 0.04 265);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.26 0.045 265);
-  /* Primary blue #0457d0 */
-  --primary: oklch(0.49 0.21 264);
+  --popover-foreground: oklch(0.31 0.04 265);
+  /* Charte Primary: Brand Blue #2D6BE4 */
+  --primary: oklch(0.57 0.18 262);
   --primary-foreground: oklch(0.99 0.005 270);
-  /* surface-container-low #f1f3ff (light periwinkle) */
-  --secondary: oklch(0.96 0.016 270);
-  --secondary-foreground: oklch(0.32 0.05 265);
-  --muted: oklch(0.96 0.016 270);
-  --muted-foreground: oklch(0.5 0.04 265);
-  /* Tertiary-container green for "Present" check pill */
-  --accent: oklch(0.86 0.13 155);
-  --accent-foreground: oklch(0.32 0.1 155);
-  --destructive: oklch(0.58 0.21 25);
+  /* Charte Primary Light: #EEF3FD (soft background washes) */
+  --secondary: oklch(0.96 0.014 264);
+  --secondary-foreground: oklch(0.4 0.13 262);
+  --muted: oklch(0.96 0.014 264);
+  --muted-foreground: oklch(0.52 0.035 265);
+  /* Charte Success: #2CB67D for "Present" / Paid / Complete pills */
+  --accent: oklch(0.69 0.14 162);
+  --accent-foreground: oklch(0.99 0.005 160);
+  /* Charte Danger: #EF4444 */
+  --destructive: oklch(0.64 0.22 25);
   --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.9 0.02 265);
-  --input: oklch(0.9 0.02 265);
-  --ring: oklch(0.49 0.21 264);
-  /* Surface ramp */
+  --border: oklch(0.91 0.014 264);
+  --input: oklch(0.91 0.014 264);
+  --ring: oklch(0.57 0.18 262);
+  /* Surface ramp (warm-neutral -> soft blue wash) */
   --surface-lowest: oklch(1 0 0);
-  --surface-low: oklch(0.965 0.014 270);
-  --surface-mid: oklch(0.94 0.022 270);
-  --surface-high: oklch(0.91 0.03 270);
+  --surface-low: oklch(0.97 0.01 270);
+  --surface-mid: oklch(0.95 0.016 270);
+  --surface-high: oklch(0.92 0.024 270);
   /* Secondary container (peach) for medical / parent notes */
   --container-peach: oklch(0.92 0.06 55);
   --on-container-peach: oklch(0.45 0.12 50);
-  /* Business status tokens */
-  --status-present: oklch(0.62 0.12 150);
-  --status-absent: oklch(0.6 0.15 25);
-  --status-late: oklch(0.75 0.14 75);
+  /* Charte business status tokens */
+  --status-present: oklch(0.69 0.14 162); /* Success #2CB67D */
+  --status-absent: oklch(0.64 0.22 25);   /* Danger #EF4444 */
+  --status-late: oklch(0.76 0.16 70);     /* Warning #F59E0B */
   --status-left: oklch(0.6 0.04 260);
-  --status-incident: oklch(0.6 0.2 30);
+  --status-incident: oklch(0.64 0.22 25);
   --status-draft: oklch(0.65 0.02 80);
-  --status-submitted: oklch(0.55 0.1 200);
+  --status-submitted: oklch(0.57 0.18 262); /* Primary blue */
   /* Moods */
   --mood-happy: oklch(0.78 0.14 80);
   --mood-calm: oklch(0.72 0.08 180);
