@@ -1,23 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { AlertTriangle, CheckCircle2, ChevronRight, Circle, FileText, PartyPopper } from "lucide-react";
 import { AppHeader } from "@/components/app-header";
 import { Page } from "@/components/page";
-import { AttendanceBadge } from "@/components/badges";
-import {
-  attendanceToday,
-  children,
-  eventsThisWeek,
-  reportsToday,
-  todosToday,
-} from "@/lib/mock";
+import { Icon } from "@/components/icon";
+import { attendanceToday, children, myClassroom, reportsToday } from "@/lib/mock";
 
 export const Route = createFileRoute("/_tabs/")({
   head: () => ({
     meta: [
-      { title: "Today — Éducatrices" },
-      { name: "description", content: "Cockpit du jour : présences, à faire et alertes de la classe." },
-      { property: "og:title", content: "Today — Éducatrices" },
+      { title: "Dashboard — Digital Sanctuary" },
+      { name: "description", content: "Cockpit du jour : présences, alertes et progression de la classe." },
+      { property: "og:title", content: "Dashboard — Digital Sanctuary" },
       { property: "og:description", content: "Cockpit quotidien de l'éducatrice Montessori." },
     ],
   }),
@@ -27,134 +20,203 @@ export const Route = createFileRoute("/_tabs/")({
 function TodayPage() {
   const present = Object.values(attendanceToday).filter((s) => s === "present").length;
   const absent = Object.values(attendanceToday).filter((s) => s === "absent").length;
-  const late = Object.values(attendanceToday).filter((s) => s === "late").length;
+  const total = children.length;
   const submitted = reportsToday.filter((r) => r.status === "submitted").length;
-  const draft = reportsToday.filter((r) => r.status === "draft").length;
-  const allergyChildren = children.filter((c) => c.allergies.length > 0);
+  const photoCount = 8;
+
+  const todayLabel = new Date().toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+
+  const present3 = children.filter((c) => attendanceToday[c.id] === "present").slice(0, 4);
 
   return (
     <>
-      <AppHeader greeting="Bonne journée" />
+      <AppHeader />
       <Page>
-        <h1 className="sr-only">Aujourd'hui</h1>
-
-        {/* Roll call */}
-        <section aria-labelledby="rollcall" className="rounded-2xl bg-card p-5 shadow-card">
-          <div className="flex items-baseline justify-between">
-            <h2 id="rollcall" className="font-display text-lg font-semibold">
-              Appel du matin
-            </h2>
-            <Link to="/children" className="text-xs font-medium text-primary">
-              Voir tout
-            </Link>
-          </div>
-          <div className="mt-4 grid grid-cols-3 gap-3">
-            <StatTile value={present} label="Présents" tone="bg-status-present/15 text-status-present" />
-            <StatTile value={late} label="Retards" tone="bg-status-late/25 text-foreground" />
-            <StatTile value={absent} label="Absents" tone="bg-status-absent/15 text-status-absent" />
+        <section className="rounded-3xl bg-card p-6 shadow-card">
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Today • {todayLabel}
+          </p>
+          <h1 className="mt-2 font-display text-4xl font-extrabold leading-tight tracking-tight text-foreground">
+            {myClassroom.name}
+          </h1>
+          <div className="mt-5 flex gap-3">
+            <div className="flex flex-1 flex-col items-center rounded-2xl bg-secondary py-4">
+              <span className="font-display text-3xl font-bold text-primary">
+                {present}/{total}
+              </span>
+              <span className="mt-1 text-xs text-muted-foreground">Present</span>
+            </div>
+            <div className="flex flex-1 flex-col items-center rounded-2xl bg-secondary py-4">
+              <span className="font-display text-3xl font-bold text-[oklch(0.55_0.18_45)]">
+                {absent}
+              </span>
+              <span className="mt-1 text-xs text-muted-foreground">Absent</span>
+            </div>
           </div>
         </section>
 
-        {/* Reports progress */}
-        <Link to="/reports" className="mt-4 block">
-          <motion.section
-            whileTap={{ scale: 0.98 }}
-            className="flex items-center gap-4 rounded-2xl bg-primary p-5 text-primary-foreground shadow-card"
-          >
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-foreground/15">
-              <FileText className="h-6 w-6" />
+        <section className="mt-4 space-y-3">
+          <div className="flex items-start gap-4 rounded-2xl bg-container-peach/70 p-4">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-card text-on-container-peach">
+              <Icon name="medical_services" filled size={22} />
             </div>
-            <div className="flex-1">
-              <p className="text-xs opacity-80">Rapports du jour</p>
-              <p className="font-display text-lg font-semibold">
-                {submitted}/{children.length} envoyés · {draft} en brouillon
+            <div>
+              <h3 className="font-display text-base font-bold text-on-container-peach">
+                Medication Due
+              </h3>
+              <p className="mt-0.5 text-sm text-on-container-peach/80">
+                Inhalateur de Léo à 11:30.
               </p>
             </div>
-            <ChevronRight className="h-5 w-5 opacity-80" />
-          </motion.section>
-        </Link>
+          </div>
+          <div className="flex items-start gap-4 rounded-2xl bg-secondary p-4">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-card text-primary">
+              <Icon name="schedule" filled size={22} />
+            </div>
+            <div>
+              <h3 className="font-display text-base font-bold">Late Collection</h3>
+              <p className="mt-0.5 text-sm text-muted-foreground">
+                Les parents de Mia auront 15 min de retard.
+              </p>
+            </div>
+          </div>
+        </section>
 
-        {/* Alerts */}
-        <section className="mt-4">
-          <h2 className="mb-2 px-1 font-display text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-            Alertes
-          </h2>
-          <ul className="space-y-2">
-            {allergyChildren.map((c) => (
-              <li
-                key={c.id}
-                className="flex items-center gap-3 rounded-xl border border-border/60 bg-card px-4 py-3"
-              >
-                <AlertTriangle className="h-4 w-4 text-status-incident" />
-                <div className="flex-1 text-sm">
-                  <span className="font-medium">{c.firstName}</span>{" "}
-                  <span className="text-muted-foreground">
-                    — allergie : {c.allergies.join(", ")}
+        <section className="mt-6 rounded-3xl bg-secondary p-5">
+          <div className="flex items-center justify-between">
+            <h2 className="font-display text-xl font-bold">Attendance</h2>
+            <Link
+              to="/children"
+              className="rounded-full bg-card px-4 py-1.5 text-xs font-semibold text-primary shadow-card"
+            >
+              Mark All Present
+            </Link>
+          </div>
+          <ul className="mt-4 flex gap-4 overflow-x-auto pb-2">
+            {present3.map((c) => (
+              <li key={c.id} className="flex min-w-[64px] flex-col items-center gap-1.5">
+                <div className="relative">
+                  <img
+                    src={c.avatar}
+                    alt={c.firstName}
+                    className="h-14 w-14 rounded-full border-4 border-card bg-card object-cover"
+                  />
+                  <span className="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-accent-foreground">
+                    <Icon name="check" filled size={12} />
                   </span>
                 </div>
-                <AttendanceBadge status={attendanceToday[c.id] ?? "present"} />
+                <span className="text-xs font-medium">{c.firstName}</span>
               </li>
             ))}
           </ul>
         </section>
 
-        {/* Todos */}
         <section className="mt-6">
-          <h2 className="mb-2 px-1 font-display text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-            À faire aujourd'hui
-          </h2>
-          <ul className="divide-y divide-border/60 rounded-2xl border border-border/60 bg-card">
-            {todosToday.map((t) => (
-              <li key={t.id} className="flex items-center gap-3 px-4 py-3">
-                {t.done ? (
-                  <CheckCircle2 className="h-5 w-5 text-status-present" />
-                ) : (
-                  <Circle className="h-5 w-5 text-muted-foreground" />
-                )}
-                <span
-                  className={
-                    "flex-1 text-sm " +
-                    (t.done ? "text-muted-foreground line-through" : "text-foreground")
-                  }
-                >
-                  {t.label}
-                </span>
-                {t.time && <span className="text-xs text-muted-foreground">{t.time}</span>}
-              </li>
-            ))}
-          </ul>
+          <h2 className="mb-3 font-display text-xl font-bold">Today's Schedule</h2>
+          <ol className="relative space-y-5 border-l-2 border-secondary pl-6">
+            <ScheduleItem time="09:00 AM" title="Morning Circle" body="Songs and weather check." past />
+            <ScheduleItem
+              time="10:30 AM • NOW"
+              title="Story Time"
+              body="Reading 'The Very Hungry Caterpillar'."
+              current
+            />
+            <ScheduleItem time="12:00 PM" title="Lunch & Nap" body="Quiet time in the sunflower room." />
+          </ol>
         </section>
 
-        {/* Events */}
-        <section className="mt-6">
-          <h2 className="mb-2 px-1 font-display text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-            Cette semaine
-          </h2>
-          <ul className="space-y-2">
-            {eventsThisWeek.map((e) => (
-              <li
-                key={e.id}
-                className="flex items-center gap-3 rounded-xl bg-accent/30 px-4 py-3"
-              >
-                <PartyPopper className="h-4 w-4 text-accent-foreground" />
-                <div className="flex-1 text-sm">
-                  <p className="font-medium">{e.title}</p>
-                  <p className="text-xs text-muted-foreground">{e.date}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
+        <section className="mt-6 rounded-3xl bg-card p-5 shadow-card">
+          <h2 className="font-display text-xl font-bold">Daily Progress</h2>
+          <div className="mt-4 space-y-4">
+            <ProgressRow label="Daily Reports Sent" value={submitted} total={total} />
+            <ProgressRow label="Photos Shared" value={photoCount} total={total} />
+          </div>
+        </section>
+
+        <section className="mt-4 grid grid-cols-2 gap-3">
+          <QuickAction icon="add_a_photo" label="Add Photo" />
+          <QuickAction icon="restaurant" label="Log Meal" />
+          <QuickAction icon="bedtime" label="Log Sleep" />
+          <QuickAction icon="edit_note" label="Write Note" />
         </section>
       </Page>
     </>
   );
 }
 
-function StatTile({ value, label, tone }: { value: number; label: string; tone: string }) {
+function ScheduleItem({
+  time,
+  title,
+  body,
+  past,
+  current,
+}: {
+  time: string;
+  title: string;
+  body: string;
+  past?: boolean;
+  current?: boolean;
+}) {
   return (
-    <div className={"rounded-xl p-3 text-center " + tone}>
-      <p className="font-display text-2xl font-semibold leading-none">{value}</p>
-      <p className="mt-1 text-[11px] uppercase tracking-wide opacity-80">{label}</p>
+    <li className="relative">
+      <span
+        className={
+          "absolute -left-[31px] top-1.5 flex h-5 w-5 items-center justify-center rounded-full border-4 border-background " +
+          (current ? "bg-primary shadow-[0_0_0_4px_color-mix(in_oklab,var(--primary)_20%,transparent)]" : "bg-secondary")
+        }
+      >
+        {current && <span className="h-1.5 w-1.5 rounded-full bg-card" />}
+      </span>
+      <div
+        className={
+          "rounded-2xl p-4 " +
+          (current ? "bg-secondary" : "bg-card shadow-card " + (past ? "opacity-70" : ""))
+        }
+      >
+        <p
+          className={
+            "text-xs font-semibold " +
+            (current ? "text-primary" : "text-muted-foreground")
+          }
+        >
+          {time}
+        </p>
+        <h3 className="mt-1 font-display text-lg font-bold">{title}</h3>
+        <p className="mt-1 text-sm text-muted-foreground">{body}</p>
+      </div>
+    </li>
+  );
+}
+
+function ProgressRow({ label, value, total }: { label: string; value: number; total: number }) {
+  const pct = Math.round((value / total) * 100);
+  return (
+    <div>
+      <div className="flex items-baseline justify-between">
+        <span className="text-sm font-medium">{label}</span>
+        <span className="text-sm font-bold text-primary">
+          {value} / {total}
+        </span>
+      </div>
+      <div className="mt-2 h-2 overflow-hidden rounded-full bg-secondary">
+        <div className="h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
+      </div>
     </div>
+  );
+}
+
+function QuickAction({ icon, label }: { icon: string; label: string }) {
+  return (
+    <motion.button
+      whileTap={{ scale: 0.96 }}
+      type="button"
+      className="flex flex-col items-center gap-2 rounded-2xl bg-card p-5 text-primary shadow-card"
+    >
+      <Icon name={icon} filled size={28} />
+      <span className="font-display text-sm font-bold text-foreground">{label}</span>
+    </motion.button>
   );
 }
