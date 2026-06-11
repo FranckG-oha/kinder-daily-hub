@@ -27,7 +27,6 @@ const diapers = ["Wet", "BM", "Dry"] as const;
 const allActivities = ["Free Play", "Finger Painting", "Story Circle", "Outdoor Play"];
 
 function ReportPage() {
-function ReportPage() {
   const navigate = useNavigate();
   const { child } = Route.useLoaderData();
   const [mealPortion, setMealPortion] = useState<Record<string, string>>({
