@@ -7,8 +7,8 @@ export const Route = createFileRoute("/_tabs")({
 
 function TabsLayout() {
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <div className="flex-1">
+    <div className="relative min-h-screen bg-background text-foreground pb-28">
+      <div>
         <Outlet />
       </div>
       <BottomNav />

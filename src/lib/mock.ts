@@ -118,19 +118,19 @@ export const classrooms: Classroom[] = [
 export const myClassroom = classrooms[0];
 
 export const children: Child[] = [
-  { id: "lea", firstName: "Léa", lastName: "Dupont", birthdate: "2022-03-14", avatar: "", cycle: "CYCLE_0", classroomId: "cls-coccinelles", allergies: ["arachide"], notes: "Aime les activités de transvasement.", guardians: [{ name: "Marie Dupont", phone: "+33 6 12 34 56 78", relation: "Mère" }] },
-  { id: "noah", firstName: "Noah", lastName: "Bernard", birthdate: "2021-11-02", avatar: "", cycle: "CYCLE_0", classroomId: "cls-coccinelles", allergies: [], notes: "Sieste difficile en début d'après-midi.", guardians: [{ name: "Julien Bernard", phone: "+33 6 98 76 54 32", relation: "Père" }] },
-  { id: "ines", firstName: "Inès", lastName: "Moreau", birthdate: "2022-06-21", avatar: "", cycle: "CYCLE_0", classroomId: "cls-coccinelles", allergies: ["œuf", "lait"], notes: "Très autonome au repas.", guardians: [{ name: "Sophie Moreau", phone: "+33 6 55 44 33 22", relation: "Mère" }] },
-  { id: "tom", firstName: "Tom", lastName: "Lefèvre", birthdate: "2021-09-08", avatar: "", cycle: "CYCLE_0", classroomId: "cls-coccinelles", allergies: [], notes: "Adore les puzzles.", guardians: [{ name: "Claire Lefèvre", phone: "+33 6 22 11 00 99", relation: "Mère" }] },
-  { id: "anaïs", firstName: "Anaïs", lastName: "Petit", birthdate: "2022-01-30", avatar: "", cycle: "CYCLE_0", classroomId: "cls-coccinelles", allergies: ["gluten"], notes: "Parle déjà beaucoup.", guardians: [{ name: "Olivier Petit", phone: "+33 6 77 88 99 00", relation: "Père" }] },
-  { id: "youssef", firstName: "Youssef", lastName: "Khalil", birthdate: "2021-12-12", avatar: "", cycle: "CYCLE_0", classroomId: "cls-coccinelles", allergies: [], notes: "Bilingue français-arabe.", guardians: [{ name: "Leïla Khalil", phone: "+33 6 33 44 55 66", relation: "Mère" }] },
-  { id: "mia", firstName: "Mia", lastName: "Rousseau", birthdate: "2022-04-19", avatar: "", cycle: "CYCLE_0", classroomId: "cls-coccinelles", allergies: ["fraise"], notes: "Très calme le matin.", guardians: [{ name: "Hugo Rousseau", phone: "+33 6 12 12 12 12", relation: "Père" }] },
-  { id: "raphaël", firstName: "Raphaël", lastName: "Garnier", birthdate: "2021-08-25", avatar: "", cycle: "CYCLE_0", classroomId: "cls-coccinelles", allergies: [], notes: "Aime la musique.", guardians: [{ name: "Émilie Garnier", phone: "+33 6 45 67 89 01", relation: "Mère" }] },
+  { id: "lea", firstName: "Léa", lastName: "Dupont", birthdate: "2022-03-14", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lea", cycle: "CYCLE_0", classroomId: "cls-coccinelles", allergies: ["arachide"], notes: "Aime les activités de transvasement.", guardians: [{ name: "Marie Dupont", phone: "+33 6 12 34 56 78", relation: "Mère" }] },
+  { id: "noah", firstName: "Noah", lastName: "Bernard", birthdate: "2021-11-02", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Noah", cycle: "CYCLE_0", classroomId: "cls-coccinelles", allergies: [], notes: "Sieste difficile en début d'après-midi.", guardians: [{ name: "Julien Bernard", phone: "+33 6 98 76 54 32", relation: "Père" }] },
+  { id: "ines", firstName: "Inès", lastName: "Moreau", birthdate: "2022-06-21", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ines", cycle: "CYCLE_0", classroomId: "cls-coccinelles", allergies: ["œuf", "lait"], notes: "Très autonome au repas.", guardians: [{ name: "Sophie Moreau", phone: "+33 6 55 44 33 22", relation: "Mère" }] },
+  { id: "tom", firstName: "Tom", lastName: "Lefèvre", birthdate: "2021-09-08", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Tom", cycle: "CYCLE_0", classroomId: "cls-coccinelles", allergies: [], notes: "Adore les puzzles.", guardians: [{ name: "Claire Lefèvre", phone: "+33 6 22 11 00 99", relation: "Mère" }] },
+  { id: "anais", firstName: "Anaïs", lastName: "Petit", birthdate: "2022-01-30", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Anais", cycle: "CYCLE_0", classroomId: "cls-coccinelles", allergies: ["gluten"], notes: "Parle déjà beaucoup.", guardians: [{ name: "Olivier Petit", phone: "+33 6 77 88 99 00", relation: "Père" }] },
+  { id: "youssef", firstName: "Youssef", lastName: "Khalil", birthdate: "2021-12-12", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Youssef", cycle: "CYCLE_0", classroomId: "cls-coccinelles", allergies: [], notes: "Bilingue français-arabe.", guardians: [{ name: "Leïla Khalil", phone: "+33 6 33 44 55 66", relation: "Mère" }] },
+  { id: "mia", firstName: "Mia", lastName: "Rousseau", birthdate: "2022-04-19", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mia", cycle: "CYCLE_0", classroomId: "cls-coccinelles", allergies: ["fraise"], notes: "Très calme le matin.", guardians: [{ name: "Hugo Rousseau", phone: "+33 6 12 12 12 12", relation: "Père" }] },
+  { id: "raphael", firstName: "Raphaël", lastName: "Garnier", birthdate: "2021-08-25", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Raphael", cycle: "CYCLE_0", classroomId: "cls-coccinelles", allergies: [], notes: "Aime la musique.", guardians: [{ name: "Émilie Garnier", phone: "+33 6 45 67 89 01", relation: "Mère" }] },
 ];
 
 export const attendanceToday: Record<string, AttendanceStatus> = {
   lea: "present", noah: "present", ines: "present", tom: "late",
-  anaïs: "present", youssef: "absent", mia: "present", raphaël: "present",
+  anais: "present", youssef: "absent", mia: "present", raphael: "present",
 };
 
 const today = new Date().toISOString();
@@ -156,7 +156,7 @@ export const reportsToday: DailyReport[] = [
     diapers: [], activities: ["Vie pratique : verser"], incidents: [],
     highlight: "Petite forme aujourd'hui, beaucoup de câlins.",
     photos: [], status: "submitted", submittedAt: today },
-  { id: "r-anais", childId: "anaïs", date: today, mood: "happy", attendance: "present",
+  { id: "r-anais", childId: "anais", date: today, mood: "happy", attendance: "present",
     meals: [{ time: "12:00", what: "Pâtes sans gluten", amount: "all" }],
     naps: [{ start: "13:00", end: "14:15", quality: "light" }],
     diapers: [{ time: "11:00", type: "wet" }],

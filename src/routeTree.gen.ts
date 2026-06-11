@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TabsRouteImport } from './routes/_tabs'
 import { Route as TabsIndexRouteImport } from './routes/_tabs.index'
+import { Route as TabsProfileRouteImport } from './routes/_tabs.profile'
+import { Route as TabsCalendarRouteImport } from './routes/_tabs.calendar'
 import { Route as TabsReportsIndexRouteImport } from './routes/_tabs.reports.index'
 import { Route as TabsMessagesIndexRouteImport } from './routes/_tabs.messages.index'
 import { Route as TabsChildrenIndexRouteImport } from './routes/_tabs.children.index'
@@ -38,6 +40,16 @@ const TabsRoute = TabsRouteImport.update({
 const TabsIndexRoute = TabsIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => TabsRoute,
+} as any)
+const TabsProfileRoute = TabsProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => TabsRoute,
+} as any)
+const TabsCalendarRoute = TabsCalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
   getParentRoute: () => TabsRoute,
 } as any)
 const TabsReportsIndexRoute = TabsReportsIndexRouteImport.update({
@@ -110,6 +122,8 @@ const TabsChildrenIdHistoryRoute = TabsChildrenIdHistoryRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof TabsIndexRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/calendar': typeof TabsCalendarRoute
+  '/profile': typeof TabsProfileRoute
   '/account/help': typeof TabsAccountHelpRoute
   '/account/preferences': typeof TabsAccountPreferencesRoute
   '/account/profile': typeof TabsAccountProfileRoute
@@ -126,6 +140,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/calendar': typeof TabsCalendarRoute
+  '/profile': typeof TabsProfileRoute
   '/': typeof TabsIndexRoute
   '/account/help': typeof TabsAccountHelpRoute
   '/account/preferences': typeof TabsAccountPreferencesRoute
@@ -145,6 +161,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_tabs': typeof TabsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/_tabs/calendar': typeof TabsCalendarRoute
+  '/_tabs/profile': typeof TabsProfileRoute
   '/_tabs/': typeof TabsIndexRoute
   '/_tabs/account/help': typeof TabsAccountHelpRoute
   '/_tabs/account/preferences': typeof TabsAccountPreferencesRoute
@@ -165,6 +183,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/sitemap.xml'
+    | '/calendar'
+    | '/profile'
     | '/account/help'
     | '/account/preferences'
     | '/account/profile'
@@ -181,6 +201,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/sitemap.xml'
+    | '/calendar'
+    | '/profile'
     | '/'
     | '/account/help'
     | '/account/preferences'
@@ -199,6 +221,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_tabs'
     | '/sitemap.xml'
+    | '/_tabs/calendar'
+    | '/_tabs/profile'
     | '/_tabs/'
     | '/_tabs/account/help'
     | '/_tabs/account/preferences'
@@ -241,6 +265,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof TabsIndexRouteImport
+      parentRoute: typeof TabsRoute
+    }
+    '/_tabs/profile': {
+      id: '/_tabs/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof TabsProfileRouteImport
+      parentRoute: typeof TabsRoute
+    }
+    '/_tabs/calendar': {
+      id: '/_tabs/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof TabsCalendarRouteImport
       parentRoute: typeof TabsRoute
     }
     '/_tabs/reports/': {
@@ -338,6 +376,8 @@ declare module '@tanstack/react-router' {
 }
 
 interface TabsRouteChildren {
+  TabsCalendarRoute: typeof TabsCalendarRoute
+  TabsProfileRoute: typeof TabsProfileRoute
   TabsIndexRoute: typeof TabsIndexRoute
   TabsAccountHelpRoute: typeof TabsAccountHelpRoute
   TabsAccountPreferencesRoute: typeof TabsAccountPreferencesRoute
@@ -355,6 +395,8 @@ interface TabsRouteChildren {
 }
 
 const TabsRouteChildren: TabsRouteChildren = {
+  TabsCalendarRoute: TabsCalendarRoute,
+  TabsProfileRoute: TabsProfileRoute,
   TabsIndexRoute: TabsIndexRoute,
   TabsAccountHelpRoute: TabsAccountHelpRoute,
   TabsAccountPreferencesRoute: TabsAccountPreferencesRoute,
