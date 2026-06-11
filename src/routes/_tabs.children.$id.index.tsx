@@ -10,12 +10,13 @@ import {
   getChild,
   getReportForChild,
 } from "@/lib/mock";
+import type { Child } from "@/lib/mock";
 
 export const Route = createFileRoute("/_tabs/children/$id/")({
   loader: ({ params }) => {
-    const child = getChild(params.id);
+    const child: Child | undefined = getChild(params.id);
     if (!child) throw notFound();
-    return { child };
+    return { child: child as Child };
   },
   head: ({ params }) => ({
     meta: [
