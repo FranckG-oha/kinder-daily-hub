@@ -23,6 +23,7 @@ import { Route as TabsMessagesAnnouncementsRouteImport } from './routes/_tabs.me
 import { Route as TabsMessagesThreadIdRouteImport } from './routes/_tabs.messages.$threadId'
 import { Route as TabsLogPhotoRouteImport } from './routes/_tabs.log.photo'
 import { Route as TabsLogNoteRouteImport } from './routes/_tabs.log.note'
+import { Route as TabsLogIncidentRouteImport } from './routes/_tabs.log.incident'
 import { Route as TabsAccountProfileRouteImport } from './routes/_tabs.account.profile'
 import { Route as TabsAccountPreferencesRouteImport } from './routes/_tabs.account.preferences'
 import { Route as TabsAccountHelpRouteImport } from './routes/_tabs.account.help'
@@ -100,6 +101,11 @@ const TabsLogNoteRoute = TabsLogNoteRouteImport.update({
   path: '/log/note',
   getParentRoute: () => TabsRoute,
 } as any)
+const TabsLogIncidentRoute = TabsLogIncidentRouteImport.update({
+  id: '/log/incident',
+  path: '/log/incident',
+  getParentRoute: () => TabsRoute,
+} as any)
 const TabsAccountProfileRoute = TabsAccountProfileRouteImport.update({
   id: '/account/profile',
   path: '/account/profile',
@@ -139,6 +145,7 @@ export interface FileRoutesByFullPath {
   '/account/help': typeof TabsAccountHelpRoute
   '/account/preferences': typeof TabsAccountPreferencesRoute
   '/account/profile': typeof TabsAccountProfileRoute
+  '/log/incident': typeof TabsLogIncidentRoute
   '/log/note': typeof TabsLogNoteRoute
   '/log/photo': typeof TabsLogPhotoRoute
   '/messages/$threadId': typeof TabsMessagesThreadIdRoute
@@ -160,6 +167,7 @@ export interface FileRoutesByTo {
   '/account/help': typeof TabsAccountHelpRoute
   '/account/preferences': typeof TabsAccountPreferencesRoute
   '/account/profile': typeof TabsAccountProfileRoute
+  '/log/incident': typeof TabsLogIncidentRoute
   '/log/note': typeof TabsLogNoteRoute
   '/log/photo': typeof TabsLogPhotoRoute
   '/messages/$threadId': typeof TabsMessagesThreadIdRoute
@@ -183,6 +191,7 @@ export interface FileRoutesById {
   '/_tabs/account/help': typeof TabsAccountHelpRoute
   '/_tabs/account/preferences': typeof TabsAccountPreferencesRoute
   '/_tabs/account/profile': typeof TabsAccountProfileRoute
+  '/_tabs/log/incident': typeof TabsLogIncidentRoute
   '/_tabs/log/note': typeof TabsLogNoteRoute
   '/_tabs/log/photo': typeof TabsLogPhotoRoute
   '/_tabs/messages/$threadId': typeof TabsMessagesThreadIdRoute
@@ -206,6 +215,7 @@ export interface FileRouteTypes {
     | '/account/help'
     | '/account/preferences'
     | '/account/profile'
+    | '/log/incident'
     | '/log/note'
     | '/log/photo'
     | '/messages/$threadId'
@@ -227,6 +237,7 @@ export interface FileRouteTypes {
     | '/account/help'
     | '/account/preferences'
     | '/account/profile'
+    | '/log/incident'
     | '/log/note'
     | '/log/photo'
     | '/messages/$threadId'
@@ -249,6 +260,7 @@ export interface FileRouteTypes {
     | '/_tabs/account/help'
     | '/_tabs/account/preferences'
     | '/_tabs/account/profile'
+    | '/_tabs/log/incident'
     | '/_tabs/log/note'
     | '/_tabs/log/photo'
     | '/_tabs/messages/$threadId'
@@ -368,6 +380,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TabsLogNoteRouteImport
       parentRoute: typeof TabsRoute
     }
+    '/_tabs/log/incident': {
+      id: '/_tabs/log/incident'
+      path: '/log/incident'
+      fullPath: '/log/incident'
+      preLoaderRoute: typeof TabsLogIncidentRouteImport
+      parentRoute: typeof TabsRoute
+    }
     '/_tabs/account/profile': {
       id: '/_tabs/account/profile'
       path: '/account/profile'
@@ -420,6 +439,7 @@ interface TabsRouteChildren {
   TabsAccountHelpRoute: typeof TabsAccountHelpRoute
   TabsAccountPreferencesRoute: typeof TabsAccountPreferencesRoute
   TabsAccountProfileRoute: typeof TabsAccountProfileRoute
+  TabsLogIncidentRoute: typeof TabsLogIncidentRoute
   TabsLogNoteRoute: typeof TabsLogNoteRoute
   TabsLogPhotoRoute: typeof TabsLogPhotoRoute
   TabsMessagesThreadIdRoute: typeof TabsMessagesThreadIdRoute
@@ -441,6 +461,7 @@ const TabsRouteChildren: TabsRouteChildren = {
   TabsAccountHelpRoute: TabsAccountHelpRoute,
   TabsAccountPreferencesRoute: TabsAccountPreferencesRoute,
   TabsAccountProfileRoute: TabsAccountProfileRoute,
+  TabsLogIncidentRoute: TabsLogIncidentRoute,
   TabsLogNoteRoute: TabsLogNoteRoute,
   TabsLogPhotoRoute: TabsLogPhotoRoute,
   TabsMessagesThreadIdRoute: TabsMessagesThreadIdRoute,
