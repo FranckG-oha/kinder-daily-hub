@@ -5,6 +5,8 @@ import { Page } from "@/components/page";
 import { Icon } from "@/components/icon";
 import { attendanceToday, children, myClassroom, reportsToday } from "@/lib/mock";
 
+type LinkTo = "/log/photo" | "/log/note" | "/log/incident" | "/children" | "/resources";
+
 export const Route = createFileRoute("/_tabs/")({
   head: () => ({
     meta: [
@@ -137,10 +139,10 @@ function TodayPage() {
         </section>
 
         <section className="mt-4 grid grid-cols-2 gap-3">
-          <QuickAction icon="add_a_photo" label="Add Photo" />
-          <QuickAction icon="restaurant" label="Log Meal" />
-          <QuickAction icon="bedtime" label="Log Sleep" />
-          <QuickAction icon="edit_note" label="Write Note" />
+          <QuickAction icon="add_a_photo" label="Add Photo" to="/log/photo" />
+          <QuickAction icon="edit_note" label="Write Note" to="/log/note" />
+          <QuickAction icon="report" label="Incident" to="/log/incident" />
+          <QuickAction icon="folder_open" label="Resources" to="/resources" />
         </section>
       </Page>
     </>
@@ -208,15 +210,16 @@ function ProgressRow({ label, value, total }: { label: string; value: number; to
   );
 }
 
-function QuickAction({ icon, label }: { icon: string; label: string }) {
+function QuickAction({ icon, label, to }: { icon: string; label: string; to: LinkTo }) {
   return (
-    <motion.button
-      whileTap={{ scale: 0.96 }}
-      type="button"
-      className="flex flex-col items-center gap-2 rounded-2xl bg-card p-5 text-primary shadow-card"
-    >
-      <Icon name={icon} filled size={28} />
-      <span className="font-display text-sm font-bold text-foreground">{label}</span>
-    </motion.button>
+    <motion.div whileTap={{ scale: 0.96 }}>
+      <Link
+        to={to}
+        className="flex flex-col items-center gap-2 rounded-2xl bg-card p-5 text-primary shadow-card"
+      >
+        <Icon name={icon} filled size={28} />
+        <span className="font-display text-sm font-bold text-foreground">{label}</span>
+      </Link>
+    </motion.div>
   );
 }
