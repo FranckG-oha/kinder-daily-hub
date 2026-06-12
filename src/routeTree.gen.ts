@@ -21,6 +21,8 @@ import { Route as TabsAccountIndexRouteImport } from './routes/_tabs.account.ind
 import { Route as TabsReportsWeekRouteImport } from './routes/_tabs.reports.week'
 import { Route as TabsMessagesAnnouncementsRouteImport } from './routes/_tabs.messages.announcements'
 import { Route as TabsMessagesThreadIdRouteImport } from './routes/_tabs.messages.$threadId'
+import { Route as TabsLogPhotoRouteImport } from './routes/_tabs.log.photo'
+import { Route as TabsLogNoteRouteImport } from './routes/_tabs.log.note'
 import { Route as TabsAccountProfileRouteImport } from './routes/_tabs.account.profile'
 import { Route as TabsAccountPreferencesRouteImport } from './routes/_tabs.account.preferences'
 import { Route as TabsAccountHelpRouteImport } from './routes/_tabs.account.help'
@@ -88,6 +90,16 @@ const TabsMessagesThreadIdRoute = TabsMessagesThreadIdRouteImport.update({
   path: '/messages/$threadId',
   getParentRoute: () => TabsRoute,
 } as any)
+const TabsLogPhotoRoute = TabsLogPhotoRouteImport.update({
+  id: '/log/photo',
+  path: '/log/photo',
+  getParentRoute: () => TabsRoute,
+} as any)
+const TabsLogNoteRoute = TabsLogNoteRouteImport.update({
+  id: '/log/note',
+  path: '/log/note',
+  getParentRoute: () => TabsRoute,
+} as any)
 const TabsAccountProfileRoute = TabsAccountProfileRouteImport.update({
   id: '/account/profile',
   path: '/account/profile',
@@ -127,6 +139,8 @@ export interface FileRoutesByFullPath {
   '/account/help': typeof TabsAccountHelpRoute
   '/account/preferences': typeof TabsAccountPreferencesRoute
   '/account/profile': typeof TabsAccountProfileRoute
+  '/log/note': typeof TabsLogNoteRoute
+  '/log/photo': typeof TabsLogPhotoRoute
   '/messages/$threadId': typeof TabsMessagesThreadIdRoute
   '/messages/announcements': typeof TabsMessagesAnnouncementsRoute
   '/reports/week': typeof TabsReportsWeekRoute
@@ -146,6 +160,8 @@ export interface FileRoutesByTo {
   '/account/help': typeof TabsAccountHelpRoute
   '/account/preferences': typeof TabsAccountPreferencesRoute
   '/account/profile': typeof TabsAccountProfileRoute
+  '/log/note': typeof TabsLogNoteRoute
+  '/log/photo': typeof TabsLogPhotoRoute
   '/messages/$threadId': typeof TabsMessagesThreadIdRoute
   '/messages/announcements': typeof TabsMessagesAnnouncementsRoute
   '/reports/week': typeof TabsReportsWeekRoute
@@ -167,6 +183,8 @@ export interface FileRoutesById {
   '/_tabs/account/help': typeof TabsAccountHelpRoute
   '/_tabs/account/preferences': typeof TabsAccountPreferencesRoute
   '/_tabs/account/profile': typeof TabsAccountProfileRoute
+  '/_tabs/log/note': typeof TabsLogNoteRoute
+  '/_tabs/log/photo': typeof TabsLogPhotoRoute
   '/_tabs/messages/$threadId': typeof TabsMessagesThreadIdRoute
   '/_tabs/messages/announcements': typeof TabsMessagesAnnouncementsRoute
   '/_tabs/reports/week': typeof TabsReportsWeekRoute
@@ -188,6 +206,8 @@ export interface FileRouteTypes {
     | '/account/help'
     | '/account/preferences'
     | '/account/profile'
+    | '/log/note'
+    | '/log/photo'
     | '/messages/$threadId'
     | '/messages/announcements'
     | '/reports/week'
@@ -207,6 +227,8 @@ export interface FileRouteTypes {
     | '/account/help'
     | '/account/preferences'
     | '/account/profile'
+    | '/log/note'
+    | '/log/photo'
     | '/messages/$threadId'
     | '/messages/announcements'
     | '/reports/week'
@@ -227,6 +249,8 @@ export interface FileRouteTypes {
     | '/_tabs/account/help'
     | '/_tabs/account/preferences'
     | '/_tabs/account/profile'
+    | '/_tabs/log/note'
+    | '/_tabs/log/photo'
     | '/_tabs/messages/$threadId'
     | '/_tabs/messages/announcements'
     | '/_tabs/reports/week'
@@ -330,6 +354,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TabsMessagesThreadIdRouteImport
       parentRoute: typeof TabsRoute
     }
+    '/_tabs/log/photo': {
+      id: '/_tabs/log/photo'
+      path: '/log/photo'
+      fullPath: '/log/photo'
+      preLoaderRoute: typeof TabsLogPhotoRouteImport
+      parentRoute: typeof TabsRoute
+    }
+    '/_tabs/log/note': {
+      id: '/_tabs/log/note'
+      path: '/log/note'
+      fullPath: '/log/note'
+      preLoaderRoute: typeof TabsLogNoteRouteImport
+      parentRoute: typeof TabsRoute
+    }
     '/_tabs/account/profile': {
       id: '/_tabs/account/profile'
       path: '/account/profile'
@@ -382,6 +420,8 @@ interface TabsRouteChildren {
   TabsAccountHelpRoute: typeof TabsAccountHelpRoute
   TabsAccountPreferencesRoute: typeof TabsAccountPreferencesRoute
   TabsAccountProfileRoute: typeof TabsAccountProfileRoute
+  TabsLogNoteRoute: typeof TabsLogNoteRoute
+  TabsLogPhotoRoute: typeof TabsLogPhotoRoute
   TabsMessagesThreadIdRoute: typeof TabsMessagesThreadIdRoute
   TabsMessagesAnnouncementsRoute: typeof TabsMessagesAnnouncementsRoute
   TabsReportsWeekRoute: typeof TabsReportsWeekRoute
@@ -401,6 +441,8 @@ const TabsRouteChildren: TabsRouteChildren = {
   TabsAccountHelpRoute: TabsAccountHelpRoute,
   TabsAccountPreferencesRoute: TabsAccountPreferencesRoute,
   TabsAccountProfileRoute: TabsAccountProfileRoute,
+  TabsLogNoteRoute: TabsLogNoteRoute,
+  TabsLogPhotoRoute: TabsLogPhotoRoute,
   TabsMessagesThreadIdRoute: TabsMessagesThreadIdRoute,
   TabsMessagesAnnouncementsRoute: TabsMessagesAnnouncementsRoute,
   TabsReportsWeekRoute: TabsReportsWeekRoute,
