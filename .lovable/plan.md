@@ -1,107 +1,67 @@
-## Cadre
 
-- App mobile-first, `max-w-[440px]` centrée, header sticky, bottom nav fixe à 5 onglets.
-- Stack imposée : TanStack Start v1 + React 19 + Vite 7, Tailwind v4 (tokens sémantiques uniquement), shadcn/ui, lucide-react, framer-motion.
-- 100% mock (`src/lib/mock.ts`), aucun backend / pas de Cloud.
-- Une seule classe par éducatrice (pas de switcher). Publication directe des rapports (`draft → submitted`, pas d'étape `validated`).
-- Variante visuelle « pro » distincte de l'app Parents : même grammaire de cartes / rythmes typographiques, mais palette accent sobre (vert sauge profond + neutres chauds) pour signaler le contexte professionnel.
+## Constat
 
-## Design system (variante pro)
+Tu as raison : la barre de navigation actuelle est **hors-spec**. Elle expose `Dashboard / Calendar / Children / Library / Profile`, alors que la spec Teacher (§7.1) impose **5 onglets précis** avec un **FAB central** :
 
-Tokens à définir dans `src/styles.css` (oklch, sémantiques) :
-- `--background` neutre crème chaud, `--foreground` graphite.
-- `--primary` vert sauge profond (accent pro), `--primary-foreground` crème.
-- `--secondary` / `--muted` : neutres sable.
-- `--accent` ambre doux pour CTA secondaires.
-- Statuts métier : `--status-present`, `--status-absent`, `--status-late`, `--status-left`, `--status-incident`, `--status-draft`, `--status-submitted`.
-- Typo : display serif humaniste pour titres (chargée via `<link>` dans `__root.tsx`), sans-serif géométrique pour body — couple distinct de l'app Parents.
-- Radius `--radius: 1rem` (cartes plus douces). Ombres définies en token (`--shadow-card`).
-- Animations framer-motion : entrée 0.25s ease-out, `whileTap={{ scale: 0.95 }}` sur les contrôles tactiles.
-
-## Architecture routing
-
-Layout pathless `_tabs.tsx` qui rend header + `<Outlet />` + bottom nav. Routes feuilles :
-
-```text
-src/routes/
-  __root.tsx
-  _tabs.tsx                            ← shell mobile (header + bottom nav)
-  _tabs.index.tsx                      → /            Today
-  _tabs.children.index.tsx             → /children
-  _tabs.children.$id.index.tsx         → /children/:id      fiche enfant
-  _tabs.children.$id.report.tsx        → /children/:id/report   édition rapport
-  _tabs.children.$id.history.tsx       → /children/:id/history  historique
-  _tabs.reports.index.tsx              → /reports     vue d'ensemble du jour
-  _tabs.reports.week.tsx               → /reports/week
-  _tabs.messages.index.tsx             → /messages
-  _tabs.messages.$threadId.tsx         → /messages/:threadId
-  _tabs.messages.announcements.tsx     → /messages/announcements
-  _tabs.account.index.tsx              → /account
-  _tabs.account.profile.tsx            → /account/profile
-  _tabs.account.preferences.tsx        → /account/preferences
-  _tabs.account.help.tsx               → /account/help
-  sitemap[.]xml.ts + public/robots.txt
+```
+[Today]   [My Class]   [● Quick Log]   [Gallery]   [Messages]
 ```
 
-Bottom nav : **Today · Children · Reports · Messages · Account**. (Calendrier et Annonces accessibles depuis Today / Messages, pas en onglet bas pour rester à 5.)
+→ Les écrans Quick Log (note/photo/incident) et Resources/Library que j'ai créés au tour précédent sont **inaccessibles** depuis la nav, et la palette ne suit pas exactement la charte (`#2D6BE4`, `#EEF3FD`, `#2CB67D`, `#F59E0B`, `#EF4444`, slate `#24324F`).
 
-## Mock data
+## Écrans manquants vs spec (Teacher, 45 écrans au total)
 
-Coller `src/lib/mock.ts` fourni (types `Mood`, `AttendanceStatus`, `Cycle`, `VoiceNote`, `MealEntry`, `NapEntry`, `DiaperEntry`, `Incident`, `DailyReport`, `Child`, `Classroom`, `Educator`, `Thread`, `Announcement` + `me`, `classrooms`, `children`, `reportsToday`, `threads`, `announcements`). Étendre avec :
-- 6–8 enfants au lieu de 2 (pour des écrans crédibles).
-- `todos: Todo[]` du jour (ex. « Préparer goûter », « Appeler Mme Bernard »).
-- `events: ClassEvent[]` (sortie parc, anniversaire).
-- Helpers : `getChild(id)`, `getReport(childId, date)`, `getThread(id)`.
+Déjà en place (à retravailler) : T-05 Today, T-11 Class List, T-12 Child Overview, T-18 Report History, T-28 Daily Report, T-24 Note, T-25 Incident, T-33 Photo Capture, T-09 Schedule (partiel), T-36 Inbox, T-37 Thread, T-39 Announcement, T-45 Profile.
 
-## Composants partagés `src/components/`
+À créer (≈ 30 écrans) : T-01 Login, T-02 PIN, T-03 Classroom Confirm, T-04 Tour, T-06 Roll Call, T-07 Attendance Summary, T-08 QR Scan, T-10 Alerts, T-13/14/15/16/17 sous-onglets profil enfant, T-19 Quick Log Hub, T-20 Meal, T-21 Nap, T-22 Temp, T-23 Medication, T-26 AI Suggester, T-27 Report Overview, T-29 Batch Report, T-30 Preview, T-31 Past Report, T-32 Gallery grid, T-34 Fullscreen Viewer, T-35 AI Blur Review, T-38 Broadcast Composer, T-40 Eval Periods, T-41 Eval Grid, T-42 Eval Heatmap, T-43 Bulletin, T-44 Weekly Schedule.
 
-- `AppHeader` (titre + avatar éducatrice + nom classe).
-- `SubPageHeader` (back + titre).
-- `BottomNav` (5 items + actif animé).
-- `ChildCard`, `ChildAvatar`, `MoodPill`, `AttendanceBadge`, `StatusDot`.
-- `MoodPicker`, `MealLogger`, `NapLogger`, `DiaperLogger`, `IncidentSheet`.
-- `VoiceRecorder` (Web Speech API, garde-fou `typeof window !== 'undefined'`, langues FR/EN/ES/AR).
-- `ThreadRow`, `AnnouncementCard`, `TodoCard`, `AlertFeed`, `RollCallStrip`.
+## Méthode de livraison
 
-## Écrans (contenu attendu)
+Pour éviter d'être coupé en plein milieu et te laisser sans rien d'affichable, je livre **par lots auto-portants** : à la fin de chaque lot, l'app **compile et est navigable**. Tu peux m'arrêter ou me relancer entre chaque lot.
 
-1. **Today (`/`)** — salutation éducatrice, `RollCallStrip` (présents/absents/retard), `TodoCard` du jour, `AlertFeed` (allergies, incidents en cours), rappel rapports à rédiger (`X/Y enfants rapportés`).
-2. **Children (`/children`)** — liste cartes enfants avec `AttendanceToggle` rapide (présent/absent/retard/parti) et accès fiche.
-3. **Fiche enfant (`/children/:id`)** — `ChildHero`, `AllergyChips`, `GuardianRow`, notes pédagogiques, CTA « Rapport du jour » + « Historique ».
-4. **Édition rapport (`/children/:id/report`)** — sections accordéon : humeur, repas, sieste, change, activités, incidents, highlight 1 phrase, photos (mock), note vocale via `VoiceRecorder`. Bouton « Soumettre » → statut `submitted`.
-5. **Historique rapports (`/children/:id/history`)** — timeline verticale par date avec mood + highlight.
-6. **Reports (`/reports`)** — board par statut (`draft` / `submitted`) pour tous les enfants du jour, filtre rapide.
-7. **Reports semaine (`/reports/week`)** — bande des 7 derniers jours, taux de complétion.
-8. **Messages (`/messages`)** — fil par enfant + chips de filtre + lien annonces direction.
-9. **Conversation (`/messages/:threadId`)** — bulles parent/éducatrice, input texte, bouton joindre photo (mock).
-10. **Annonces (`/messages/announcements`)** — liste `AnnouncementCard`, pinned en haut.
-11. **Account (`/account`)** — carte classe, raccourcis Profil / Préférences / Aide, déconnexion.
-12. **Profil (`/account/profile`)**, **Préférences (`/account/preferences`)** (langue, notifications), **Aide (`/account/help`)**.
+### Lot 0 — Fondation (un seul tour, prérequis indispensable)
+1. **Design tokens** alignés sur la charte v1.1 dans `src/styles.css` :
+   - `--primary` = #2D6BE4, `--primary-light` = #EEF3FD, `--success` = #2CB67D, `--warning` = #F59E0B, `--destructive` = #EF4444, `--foreground` = #24324F, `--background` = #F9F9FF.
+   - Radius cartes 24–32 px, boutons `rounded-full` 52 px, ombres `shadow-sm`.
+2. **Iconographie** : bascule sur `lucide-react` (stroke 1.75) ; suppression de `Material Symbols`. Composant `Icon` réécrit en wrapper Lucide.
+3. **Bottom nav** réécrite : 5 onglets `Today / My Class / Quick Log (FAB) / Gallery / Messages`, fond `bg-surface/80 backdrop-blur-xl`, bord supérieur hairline, onglet central surélevé +8 px en cercle plein.
+4. Renommage / suppression des routes obsolètes : `/calendar` → fusionné dans Today, `/resources` → supprimé, `/profile` → déplacé dans `account`.
+5. **Stubs de routes** pour les 5 onglets + redirections, pour qu'aucun lien existant ne casse.
 
-## SEO & a11y
+### Lot 1 — Today complet (T-05, T-06, T-07, T-08, T-09, T-10)
+Refonte de `/` selon §7.2 : header date + salle + ratio présents, attendance strip (avatars 44 px avec bordures colorées par statut, long-press → quick profile), Report Progress (barres animées), Today's Schedule read-only avec « NOW », bloc Alerts (médicaments, non-récupérés). Sous-écrans : Roll Call plein écran, Attendance Summary, QR Scan (caméra mock), Full Schedule, Alerts list.
 
-- `head()` par route : title < 60c, description < 160c, og:title/og:description, un seul `<h1>` par écran.
-- `aria-label` sur toutes les icônes cliquables. Cibles tactiles ≥ 44px.
-- `sitemap.xml` + `robots.txt` ajoutés en fin de scaffolding.
+### Lot 2 — My Class (T-11 → T-18)
+Liste enfants avec status dots, fiche enfant avec sous-onglets `Overview / Personal / Medical / Emergency / Pickup / Attendance / Reports`. Heatmap calendrier 30 j pour l'historique.
 
-## Ordre d'exécution
+### Lot 3 — Quick Log Hub (T-19 → T-26)
+Hub 2×3 atteint depuis le FAB central. Écrans Meal batch, Nap batch, Temperature (auto-flag fièvre), Medication (avec confirmation d'autorisation), Note/Mood (réutilise VoiceRecorder), Incident, AI Suggester.
 
-1. Tokens + typo + `__root.tsx` (link fonts).
-2. `_tabs.tsx` shell + `BottomNav` + `AppHeader`.
-3. `src/lib/mock.ts` étendu.
-4. Écran Today.
-5. Children list + fiche enfant + historique.
-6. Rapport (édition + voice).
-7. Reports (jour + semaine).
-8. Messages (liste + conversation + annonces).
-9. Account + sous-pages.
-10. `sitemap.xml` + `robots.txt`.
+### Lot 4 — Daily Reports (T-27 → T-31)
+Overview du jour, formulaire complet par enfant, batch editor, preview avant envoi, lecture rapports passés.
 
-## Hors scope (à confirmer plus tard)
+### Lot 5 — Gallery (T-32 → T-35)
+Grille classe, capture + tag enfants + privacy + AI blur (mock), viewer plein écran swipeable, écran de revue du flou IA avant/après.
 
-- Auth réelle (`/auth`) — splash décoratif pour l'instant.
-- Calendrier classe dédié (`/calendar`) — repoussé, événements visibles dans Today.
-- Validation direction des rapports — retiré (publication directe).
-- Backend / Cloud / Supabase — non.
+### Lot 6 — Messages (T-36 → T-39)
+Inbox parents/éducateur/direction, fil conversation, broadcast composer, lecture annonce.
 
-Confirme et je lance l'étape 1.
+### Lot 7 — Evaluations + Account (T-40 → T-45)
+Liste périodes, grille de saisie skills × enfants, heatmap de complétion, bulletin PDF mock, weekly schedule, profil.
+
+### Lot 8 — Auth & Onboarding (T-01 → T-04)
+Login, PIN setup, confirmation classe assignée, tour 3 slides. Mockés (pas de backend).
+
+## Détails techniques
+
+- 100 % mock (`src/lib/mock.ts` étendu : medications, temperatures, schedule, evaluations, gallery photos, broadcasts).
+- Aucun backend / pas de Cloud.
+- Stack inchangée : TanStack Start + Tailwind v4 tokens sémantiques + shadcn + framer-motion + Lucide.
+- Routing file-based : un fichier `_tabs.<onglet>.<sous-écran>.tsx` par écran de la spec, IDs T-xx en commentaire.
+- A11y : cibles ≥ 44 px, `aria-label` systématique, contraste ≥ 4.5:1.
+
+## À confirmer avant que je lance le Lot 0
+
+1. **Tu valides l'ordre des lots ci-dessus ?** (sinon dis-moi lequel prioriser)
+2. **Onboarding/Login (Lot 8) maintenant ou à la fin ?** Par défaut je le mets à la fin pour livrer d'abord le cœur métier visible.
+3. **Évaluations (Lot 7)** : utile pour CYCLE_0/1 ou on les saute pour gagner du temps ?
