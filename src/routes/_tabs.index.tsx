@@ -5,7 +5,12 @@ import { Page } from "@/components/page";
 import { Icon } from "@/components/icon";
 import { attendanceToday, children, myClassroom, reportsToday } from "@/lib/mock";
 
-type LinkTo = "/log/photo" | "/log/note" | "/log/incident" | "/children" | "/resources";
+type LinkTo =
+  | "/log/photo"
+  | "/log/note"
+  | "/log/incident"
+  | "/children"
+  | "/quick-log";
 
 export const Route = createFileRoute("/_tabs/")({
   head: () => ({
