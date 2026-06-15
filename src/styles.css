@@ -79,6 +79,10 @@
   --color-surface-high: var(--surface-high);
   --color-container-peach: var(--container-peach);
   --color-on-container-peach: var(--on-container-peach);
+  --color-warning-tint: var(--warning-tint);
+  --color-warning-ink: var(--warning-ink);
+  --color-danger-tint: var(--danger-tint);
+  --color-success-tint: var(--success-tint);
   --font-display: var(--font-display);
   --font-sans: var(--font-sans);
 }
@@ -115,6 +119,10 @@
   --surface-high: oklch(0.94 0.025 260);
   --container-peach: oklch(0.94 0.05 60);
   --on-container-peach: oklch(0.48 0.12 55);
+  --warning-tint: oklch(0.96 0.06 80);
+  --warning-ink: oklch(0.5 0.15 65);
+  --danger-tint: oklch(0.95 0.05 25);
+  --success-tint: oklch(0.95 0.05 158);
   /* Business status tokens (charte v1.1) */
   --status-present: oklch(0.68 0.16 158);   /* success */
   --status-absent: oklch(0.64 0.21 25);     /* danger */

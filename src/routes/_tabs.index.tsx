@@ -1,156 +1,318 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
+import {
+  AlertTriangle,
+  ChevronRight,
+  Pill,
+  Clock3,
+  QrCode,
+  CalendarDays,
+} from "lucide-react";
 import { AppHeader } from "@/components/app-header";
 import { Page } from "@/components/page";
-import { Icon } from "@/components/icon";
-import { attendanceToday, children, myClassroom, reportsToday } from "@/lib/mock";
+import {
+  attendanceToday,
+  children,
+  myClassroom,
+  reportsToday,
+  todaySchedule,
+  medicationsDueToday,
+  todayAlerts,
+  getChild,
+  type AttendanceStatus,
+} from "@/lib/mock";
 
-type LinkTo =
-  | "/log/photo"
-  | "/log/note"
-  | "/log/incident"
-  | "/children"
-  | "/quick-log";
-
+// T-05 — Today (Dashboard)
 export const Route = createFileRoute("/_tabs/")({
   head: () => ({
     meta: [
-      { title: "Dashboard — Digital Sanctuary" },
-      { name: "description", content: "Cockpit du jour : présences, alertes et progression de la classe." },
-      { property: "og:title", content: "Dashboard — Digital Sanctuary" },
+      { title: "Today — Digital Sanctuary" },
+      { name: "description", content: "Cockpit du jour : présences, alertes, planning et progression." },
+      { property: "og:title", content: "Today — Digital Sanctuary" },
       { property: "og:description", content: "Cockpit quotidien de l'éducatrice Montessori." },
     ],
   }),
   component: TodayPage,
 });
 
+function minutesNow() {
+  const d = new Date();
+  return d.getHours() * 60 + d.getMinutes();
+}
+function toMin(hhmm: string) {
+  const [h, m] = hhmm.split(":").map(Number);
+  return h * 60 + m;
+}
+
 function TodayPage() {
+  const total = children.length;
   const present = Object.values(attendanceToday).filter((s) => s === "present").length;
   const absent = Object.values(attendanceToday).filter((s) => s === "absent").length;
-  const total = children.length;
+  const late = Object.values(attendanceToday).filter((s) => s === "late").length;
+
   const submitted = reportsToday.filter((r) => r.status === "submitted").length;
   const photoCount = 8;
 
-  const todayLabel = new Date().toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
+  const now = minutesNow();
+  const currentIdx = todaySchedule.findIndex(
+    (s) => toMin(s.start) <= now && now < toMin(s.end),
+  );
+  const upcoming = todaySchedule
+    .map((s, i) => ({ s, i }))
+    .filter(({ s, i }) => i === currentIdx || toMin(s.start) > now)
+    .slice(0, 3);
 
-  const present3 = children.filter((c) => attendanceToday[c.id] === "present").slice(0, 4);
+  const dateLabel = new Date().toLocaleDateString("fr-FR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
 
   return (
     <>
       <AppHeader />
       <Page>
+        {/* Header card */}
         <section className="rounded-3xl bg-card p-6 shadow-card">
           <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Today • {todayLabel}
+            {dateLabel}
           </p>
-          <h1 className="mt-2 font-display text-4xl font-extrabold leading-tight tracking-tight text-foreground">
+          <h1 className="mt-1 font-display text-3xl font-extrabold leading-tight tracking-tight">
             {myClassroom.name}
           </h1>
-          <div className="mt-5 flex gap-3">
-            <div className="flex flex-1 flex-col items-center rounded-2xl bg-secondary py-4">
-              <span className="font-display text-3xl font-bold text-primary">
-                {present}/{total}
-              </span>
-              <span className="mt-1 text-xs text-muted-foreground">Present</span>
-            </div>
-            <div className="flex flex-1 flex-col items-center rounded-2xl bg-secondary py-4">
-              <span className="font-display text-3xl font-bold text-[oklch(0.55_0.18_45)]">
-                {absent}
-              </span>
-              <span className="mt-1 text-xs text-muted-foreground">Absent</span>
-            </div>
+          <div className="mt-5 grid grid-cols-3 gap-2">
+            <Stat value={`${present}/${total}`} label="Présents" tone="primary" />
+            <Stat value={String(late)} label="Retards" tone="warning" />
+            <Stat value={String(absent)} label="Absents" tone="danger" />
           </div>
         </section>
 
-        <section className="mt-4 space-y-3">
-          <div className="flex items-start gap-4 rounded-2xl bg-container-peach/70 p-4">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-card text-on-container-peach">
-              <Icon name="medical_services" filled size={22} />
-            </div>
-            <div>
-              <h3 className="font-display text-base font-bold text-on-container-peach">
-                Medication Due
-              </h3>
-              <p className="mt-0.5 text-sm text-on-container-peach/80">
-                Inhalateur de Léo à 11:30.
-              </p>
-            </div>
-          </div>
-          <div className="flex items-start gap-4 rounded-2xl bg-secondary p-4">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-card text-primary">
-              <Icon name="schedule" filled size={22} />
-            </div>
-            <div>
-              <h3 className="font-display text-base font-bold">Late Collection</h3>
-              <p className="mt-0.5 text-sm text-muted-foreground">
-                Les parents de Mia auront 15 min de retard.
-              </p>
-            </div>
-          </div>
+        {/* Quick actions */}
+        <section className="mt-4 grid grid-cols-3 gap-3">
+          <QuickTile to="/attendance" Icon={ChevronRight} label="Roll Call" />
+          <QuickTile to="/attendance/scan" Icon={QrCode} label="QR Scan" />
+          <QuickTile to="/schedule" Icon={CalendarDays} label="Schedule" />
         </section>
 
-        <section className="mt-6 rounded-3xl bg-secondary p-5">
-          <div className="flex items-center justify-between">
-            <h2 className="font-display text-xl font-bold">Attendance</h2>
-            <Link
-              to="/children"
-              className="rounded-full bg-card px-4 py-1.5 text-xs font-semibold text-primary shadow-card"
-            >
-              Mark All Present
-            </Link>
-          </div>
-          <ul className="mt-4 flex gap-4 overflow-x-auto pb-2">
-            {present3.map((c) => (
-              <li key={c.id} className="flex min-w-[64px] flex-col items-center gap-1.5">
-                <div className="relative">
-                  <img
-                    src={c.avatar}
-                    alt={c.firstName}
-                    className="h-14 w-14 rounded-full border-4 border-card bg-card object-cover"
-                  />
-                  <span className="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-accent-foreground">
-                    <Icon name="check" filled size={12} />
-                  </span>
-                </div>
-                <span className="text-xs font-medium">{c.firstName}</span>
-              </li>
-            ))}
+        {/* Attendance strip */}
+        <section className="mt-6">
+          <SectionHeader title="Attendance" to="/attendance" cta="Roll Call" />
+          <ul className="mt-3 flex gap-3 overflow-x-auto pb-2">
+            {children.map((c) => {
+              const st = attendanceToday[c.id];
+              return (
+                <li key={c.id} className="flex min-w-[68px] flex-col items-center gap-1.5">
+                  <Link
+                    to="/children/$id"
+                    params={{ id: c.id }}
+                    className="block"
+                    aria-label={`${c.firstName} — ${st}`}
+                  >
+                    <AttendanceAvatar src={c.avatar} name={c.firstName} status={st} />
+                  </Link>
+                  <span className="text-[11px] font-semibold text-foreground/80">{c.firstName}</span>
+                </li>
+              );
+            })}
           </ul>
         </section>
 
+        {/* Alerts */}
+        {todayAlerts.length > 0 && (
+          <section className="mt-6">
+            <SectionHeader title="Alerts" to="/alerts" cta="Tout voir" />
+            <div className="mt-3 space-y-2.5">
+              {todayAlerts.slice(0, 3).map((a) => (
+                <AlertRow key={a.id} alert={a} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Medications */}
+        {medicationsDueToday.length > 0 && (
+          <section className="mt-6 rounded-3xl bg-card p-5 shadow-card">
+            <div className="flex items-center gap-2">
+              <Pill size={18} className="text-primary" strokeWidth={2} />
+              <h2 className="font-display text-base font-bold">Médicaments du jour</h2>
+            </div>
+            <ul className="mt-3 space-y-2">
+              {medicationsDueToday.map((m) => {
+                const c = getChild(m.childId);
+                return (
+                  <li
+                    key={m.id}
+                    className="flex items-center gap-3 rounded-2xl bg-secondary px-3 py-2.5"
+                  >
+                    <img src={c?.avatar} alt="" className="h-9 w-9 rounded-full bg-card" />
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold">
+                        {c?.firstName} — {m.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {m.dose} · {m.time}
+                      </p>
+                    </div>
+                    <span className="rounded-full bg-warning-tint px-3 py-1 text-[11px] font-bold text-warning-ink">
+                      À donner
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        )}
+
+        {/* Schedule */}
         <section className="mt-6">
-          <h2 className="mb-3 font-display text-xl font-bold">Today's Schedule</h2>
-          <ol className="relative space-y-5 border-l-2 border-secondary pl-6">
-            <ScheduleItem time="09:00 AM" title="Morning Circle" body="Songs and weather check." past />
-            <ScheduleItem
-              time="10:30 AM • NOW"
-              title="Story Time"
-              body="Reading 'The Very Hungry Caterpillar'."
-              current
-            />
-            <ScheduleItem time="12:00 PM" title="Lunch & Nap" body="Quiet time in the sunflower room." />
+          <SectionHeader title="Today's Schedule" to="/schedule" cta="Tout voir" />
+          <ol className="relative mt-4 space-y-4 border-l-2 border-secondary pl-6">
+            {upcoming.map(({ s, i }) => {
+              const isNow = i === currentIdx;
+              const isPast = toMin(s.end) <= now;
+              return (
+                <ScheduleItem
+                  key={s.id}
+                  time={`${s.start}${isNow ? " • NOW" : ""}`}
+                  title={s.title}
+                  body={s.body}
+                  current={isNow}
+                  past={isPast}
+                />
+              );
+            })}
           </ol>
         </section>
 
+        {/* Progress */}
         <section className="mt-6 rounded-3xl bg-card p-5 shadow-card">
-          <h2 className="font-display text-xl font-bold">Daily Progress</h2>
+          <h2 className="font-display text-base font-bold">Daily Progress</h2>
           <div className="mt-4 space-y-4">
-            <ProgressRow label="Daily Reports Sent" value={submitted} total={total} />
-            <ProgressRow label="Photos Shared" value={photoCount} total={total} />
+            <ProgressRow label="Rapports envoyés" value={submitted} total={total} />
+            <ProgressRow label="Photos partagées" value={photoCount} total={total} />
           </div>
-        </section>
-
-        <section className="mt-4 grid grid-cols-2 gap-3">
-          <QuickAction icon="add_a_photo" label="Add Photo" to="/log/photo" />
-          <QuickAction icon="edit_note" label="Write Note" to="/log/note" />
-          <QuickAction icon="report" label="Incident" to="/log/incident" />
-          <QuickAction icon="layout-grid" label="Quick Log" to="/quick-log" />
         </section>
       </Page>
     </>
+  );
+}
+
+// ─── sub-components ───────────────────────────────────────
+
+function Stat({
+  value,
+  label,
+  tone,
+}: {
+  value: string;
+  label: string;
+  tone: "primary" | "warning" | "danger";
+}) {
+  const cls =
+    tone === "primary"
+      ? "text-primary"
+      : tone === "warning"
+        ? "text-[color:var(--status-late)]"
+        : "text-destructive";
+  return (
+    <div className="flex flex-col items-center rounded-2xl bg-secondary py-3">
+      <span className={`font-display text-2xl font-extrabold ${cls}`}>{value}</span>
+      <span className="mt-0.5 text-[11px] text-muted-foreground">{label}</span>
+    </div>
+  );
+}
+
+function QuickTile({
+  to,
+  Icon,
+  label,
+}: {
+  to: "/attendance" | "/attendance/scan" | "/schedule";
+  Icon: typeof ChevronRight;
+  label: string;
+}) {
+  return (
+    <motion.div whileTap={{ scale: 0.96 }}>
+      <Link
+        to={to}
+        className="flex flex-col items-center gap-2 rounded-2xl bg-card p-3.5 text-primary shadow-card"
+      >
+        <Icon size={22} strokeWidth={1.75} />
+        <span className="text-xs font-bold text-foreground">{label}</span>
+      </Link>
+    </motion.div>
+  );
+}
+
+function SectionHeader({
+  title,
+  to,
+  cta,
+}: {
+  title: string;
+  to: "/attendance" | "/alerts" | "/schedule";
+  cta: string;
+}) {
+  return (
+    <div className="flex items-center justify-between">
+      <h2 className="font-display text-xl font-bold">{title}</h2>
+      <Link
+        to={to}
+        className="rounded-full bg-card px-3 py-1.5 text-[11px] font-bold text-primary shadow-card"
+      >
+        {cta}
+      </Link>
+    </div>
+  );
+}
+
+const STATUS_RING: Record<AttendanceStatus, string> = {
+  present: "ring-[color:var(--status-present)]",
+  absent: "ring-[color:var(--status-absent)] opacity-50",
+  late: "ring-[color:var(--status-late)]",
+  left: "ring-[color:var(--status-left)]",
+};
+
+function AttendanceAvatar({
+  src,
+  name,
+  status,
+}: {
+  src: string;
+  name: string;
+  status: AttendanceStatus;
+}) {
+  return (
+    <div
+      className={`h-12 w-12 overflow-hidden rounded-full bg-card ring-[3px] ring-offset-2 ring-offset-background ${STATUS_RING[status]}`}
+    >
+      <img src={src} alt={name} className="h-full w-full object-cover" />
+    </div>
+  );
+}
+
+function AlertRow({ alert }: { alert: { kind: string; title: string; body: string; at?: string } }) {
+  const isMed = alert.kind === "medication";
+  const isPickup = alert.kind === "pickup";
+  const tone = isMed
+    ? "bg-warning-tint text-warning-ink"
+    : isPickup
+      ? "bg-secondary text-primary"
+      : "bg-secondary text-foreground";
+  const Ico = isMed ? Pill : isPickup ? Clock3 : AlertTriangle;
+  return (
+    <div className={`flex items-start gap-3 rounded-2xl p-3.5 ${tone}`}>
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-card">
+        <Ico size={18} strokeWidth={1.75} />
+      </div>
+      <div className="flex-1">
+        <p className="text-sm font-bold">{alert.title}</p>
+        <p className="mt-0.5 text-xs opacity-80">{alert.body}</p>
+      </div>
+      {alert.at && (
+        <span className="self-center text-[11px] font-bold opacity-70">{alert.at}</span>
+      )}
+    </div>
   );
 }
 
@@ -172,7 +334,9 @@ function ScheduleItem({
       <span
         className={
           "absolute -left-[31px] top-1.5 flex h-5 w-5 items-center justify-center rounded-full border-4 border-background " +
-          (current ? "bg-primary shadow-[0_0_0_4px_color-mix(in_oklab,var(--primary)_20%,transparent)]" : "bg-secondary")
+          (current
+            ? "bg-primary shadow-[0_0_0_4px_color-mix(in_oklab,var(--primary)_20%,transparent)]"
+            : "bg-secondary")
         }
       >
         {current && <span className="h-1.5 w-1.5 rounded-full bg-card" />}
@@ -180,15 +344,12 @@ function ScheduleItem({
       <div
         className={
           "rounded-2xl p-4 " +
-          (current ? "bg-secondary" : "bg-card shadow-card " + (past ? "opacity-70" : ""))
+          (current
+            ? "bg-secondary"
+            : "bg-card shadow-card " + (past ? "opacity-60" : ""))
         }
       >
-        <p
-          className={
-            "text-xs font-semibold " +
-            (current ? "text-primary" : "text-muted-foreground")
-          }
-        >
+        <p className={"text-xs font-semibold " + (current ? "text-primary" : "text-muted-foreground")}>
           {time}
         </p>
         <h3 className="mt-1 font-display text-lg font-bold">{title}</h3>
@@ -212,19 +373,5 @@ function ProgressRow({ label, value, total }: { label: string; value: number; to
         <div className="h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
       </div>
     </div>
-  );
-}
-
-function QuickAction({ icon, label, to }: { icon: string; label: string; to: LinkTo }) {
-  return (
-    <motion.div whileTap={{ scale: 0.96 }}>
-      <Link
-        to={to}
-        className="flex flex-col items-center gap-2 rounded-2xl bg-card p-5 text-primary shadow-card"
-      >
-        <Icon name={icon} filled size={28} />
-        <span className="font-display text-sm font-bold text-foreground">{label}</span>
-      </Link>
-    </motion.div>
   );
 }

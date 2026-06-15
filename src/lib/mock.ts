@@ -204,6 +204,64 @@ export const eventsThisWeek: ClassEvent[] = [
   { id: "e3", date: "2026-06-15", title: "Réunion équipe", kind: "meeting" },
 ];
 
+// ─── Today extras (T-05 → T-10) ─────────────────────────
+
+export type ScheduleBlock = {
+  id: string;
+  start: string; // "HH:MM"
+  end: string;
+  title: string;
+  body: string;
+  kind: "circle" | "activity" | "meal" | "nap" | "outdoor" | "story";
+};
+
+export const todaySchedule: ScheduleBlock[] = [
+  { id: "s1", start: "08:30", end: "09:00", title: "Accueil échelonné", body: "Transition douce avec les parents.", kind: "circle" },
+  { id: "s2", start: "09:00", end: "09:30", title: "Morning Circle", body: "Chants, météo, calendrier.", kind: "circle" },
+  { id: "s3", start: "09:30", end: "10:30", title: "Ateliers Montessori", body: "Vie pratique & sensoriel.", kind: "activity" },
+  { id: "s4", start: "10:30", end: "11:00", title: "Story Time", body: "« La très petite chenille ».", kind: "story" },
+  { id: "s5", start: "11:00", end: "11:45", title: "Jardin", body: "Motricité libre extérieure.", kind: "outdoor" },
+  { id: "s6", start: "12:00", end: "13:00", title: "Déjeuner", body: "Service en autonomie.", kind: "meal" },
+  { id: "s7", start: "13:00", end: "15:00", title: "Sieste", body: "Salle des tournesols.", kind: "nap" },
+  { id: "s8", start: "15:30", end: "16:00", title: "Goûter", body: "Compote pomme-poire.", kind: "meal" },
+];
+
+export type MedicationDue = {
+  id: string;
+  childId: string;
+  name: string;
+  dose: string;
+  time: string;
+  given: boolean;
+};
+
+export const medicationsDueToday: MedicationDue[] = [
+  { id: "m1", childId: "lea", name: "Ventoline", dose: "2 puffs", time: "11:30", given: false },
+  { id: "m2", childId: "ines", name: "Doliprane", dose: "5 ml", time: "14:00", given: false },
+];
+
+export type LatePickup = { childId: string; expectedAt: string; reason: string };
+
+export const latePickupsToday: LatePickup[] = [
+  { childId: "mia", expectedAt: "17:30", reason: "Parents +15 min, embouteillage A86." },
+];
+
+export type TodayAlert = {
+  id: string;
+  kind: "medication" | "pickup" | "absent" | "incident" | "weather";
+  title: string;
+  body: string;
+  childId?: string;
+  at?: string;
+};
+
+export const todayAlerts: TodayAlert[] = [
+  { id: "al1", kind: "medication", title: "Ventoline — Léa", body: "À administrer à 11:30.", childId: "lea", at: "11:30" },
+  { id: "al2", kind: "pickup", title: "Retard Mia", body: "Parents +15 min (A86).", childId: "mia", at: "17:30" },
+  { id: "al3", kind: "absent", title: "Youssef absent", body: "Maman a prévenu — gastro.", childId: "youssef" },
+  { id: "al4", kind: "weather", title: "Pic de chaleur 14h–16h", body: "Reporter le jardin à 16h30.", at: "14:00" },
+];
+
 // ─── helpers ────────────────────────────────────────────
 
 export const getChild = (id: string) => children.find((c) => c.id === id);
