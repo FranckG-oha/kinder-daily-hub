@@ -6,7 +6,7 @@ export function AppHeader() {
   return (
     <header className="sticky top-0 z-30 bg-secondary/80 backdrop-blur">
       <div className="mx-auto flex max-w-[440px] items-center justify-between px-5 py-4">
-        <Link to="/profile" aria-label="Mon profil" className="flex items-center gap-3">
+        <Link to="/account" aria-label="Mon profil" className="flex items-center gap-3">
           <img
             src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${me.firstName}`}
             alt=""

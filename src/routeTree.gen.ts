@@ -12,9 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TabsRouteImport } from './routes/_tabs'
 import { Route as TabsIndexRouteImport } from './routes/_tabs.index'
-import { Route as TabsResourcesRouteImport } from './routes/_tabs.resources'
-import { Route as TabsProfileRouteImport } from './routes/_tabs.profile'
-import { Route as TabsCalendarRouteImport } from './routes/_tabs.calendar'
+import { Route as TabsQuickLogRouteImport } from './routes/_tabs.quick-log'
+import { Route as TabsGalleryRouteImport } from './routes/_tabs.gallery'
 import { Route as TabsReportsIndexRouteImport } from './routes/_tabs.reports.index'
 import { Route as TabsMessagesIndexRouteImport } from './routes/_tabs.messages.index'
 import { Route as TabsChildrenIndexRouteImport } from './routes/_tabs.children.index'
@@ -46,19 +45,14 @@ const TabsIndexRoute = TabsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => TabsRoute,
 } as any)
-const TabsResourcesRoute = TabsResourcesRouteImport.update({
-  id: '/resources',
-  path: '/resources',
+const TabsQuickLogRoute = TabsQuickLogRouteImport.update({
+  id: '/quick-log',
+  path: '/quick-log',
   getParentRoute: () => TabsRoute,
 } as any)
-const TabsProfileRoute = TabsProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => TabsRoute,
-} as any)
-const TabsCalendarRoute = TabsCalendarRouteImport.update({
-  id: '/calendar',
-  path: '/calendar',
+const TabsGalleryRoute = TabsGalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
   getParentRoute: () => TabsRoute,
 } as any)
 const TabsReportsIndexRoute = TabsReportsIndexRouteImport.update({
@@ -146,9 +140,8 @@ const TabsChildrenIdHistoryRoute = TabsChildrenIdHistoryRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof TabsIndexRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/calendar': typeof TabsCalendarRoute
-  '/profile': typeof TabsProfileRoute
-  '/resources': typeof TabsResourcesRoute
+  '/gallery': typeof TabsGalleryRoute
+  '/quick-log': typeof TabsQuickLogRoute
   '/account/help': typeof TabsAccountHelpRoute
   '/account/preferences': typeof TabsAccountPreferencesRoute
   '/account/profile': typeof TabsAccountProfileRoute
@@ -168,9 +161,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/calendar': typeof TabsCalendarRoute
-  '/profile': typeof TabsProfileRoute
-  '/resources': typeof TabsResourcesRoute
+  '/gallery': typeof TabsGalleryRoute
+  '/quick-log': typeof TabsQuickLogRoute
   '/': typeof TabsIndexRoute
   '/account/help': typeof TabsAccountHelpRoute
   '/account/preferences': typeof TabsAccountPreferencesRoute
@@ -193,9 +185,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_tabs': typeof TabsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/_tabs/calendar': typeof TabsCalendarRoute
-  '/_tabs/profile': typeof TabsProfileRoute
-  '/_tabs/resources': typeof TabsResourcesRoute
+  '/_tabs/gallery': typeof TabsGalleryRoute
+  '/_tabs/quick-log': typeof TabsQuickLogRoute
   '/_tabs/': typeof TabsIndexRoute
   '/_tabs/account/help': typeof TabsAccountHelpRoute
   '/_tabs/account/preferences': typeof TabsAccountPreferencesRoute
@@ -219,9 +210,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/sitemap.xml'
-    | '/calendar'
-    | '/profile'
-    | '/resources'
+    | '/gallery'
+    | '/quick-log'
     | '/account/help'
     | '/account/preferences'
     | '/account/profile'
@@ -241,9 +231,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/sitemap.xml'
-    | '/calendar'
-    | '/profile'
-    | '/resources'
+    | '/gallery'
+    | '/quick-log'
     | '/'
     | '/account/help'
     | '/account/preferences'
@@ -265,9 +254,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_tabs'
     | '/sitemap.xml'
-    | '/_tabs/calendar'
-    | '/_tabs/profile'
-    | '/_tabs/resources'
+    | '/_tabs/gallery'
+    | '/_tabs/quick-log'
     | '/_tabs/'
     | '/_tabs/account/help'
     | '/_tabs/account/preferences'
@@ -315,25 +303,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TabsIndexRouteImport
       parentRoute: typeof TabsRoute
     }
-    '/_tabs/resources': {
-      id: '/_tabs/resources'
-      path: '/resources'
-      fullPath: '/resources'
-      preLoaderRoute: typeof TabsResourcesRouteImport
+    '/_tabs/quick-log': {
+      id: '/_tabs/quick-log'
+      path: '/quick-log'
+      fullPath: '/quick-log'
+      preLoaderRoute: typeof TabsQuickLogRouteImport
       parentRoute: typeof TabsRoute
     }
-    '/_tabs/profile': {
-      id: '/_tabs/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof TabsProfileRouteImport
-      parentRoute: typeof TabsRoute
-    }
-    '/_tabs/calendar': {
-      id: '/_tabs/calendar'
-      path: '/calendar'
-      fullPath: '/calendar'
-      preLoaderRoute: typeof TabsCalendarRouteImport
+    '/_tabs/gallery': {
+      id: '/_tabs/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof TabsGalleryRouteImport
       parentRoute: typeof TabsRoute
     }
     '/_tabs/reports/': {
@@ -452,9 +433,8 @@ declare module '@tanstack/react-router' {
 }
 
 interface TabsRouteChildren {
-  TabsCalendarRoute: typeof TabsCalendarRoute
-  TabsProfileRoute: typeof TabsProfileRoute
-  TabsResourcesRoute: typeof TabsResourcesRoute
+  TabsGalleryRoute: typeof TabsGalleryRoute
+  TabsQuickLogRoute: typeof TabsQuickLogRoute
   TabsIndexRoute: typeof TabsIndexRoute
   TabsAccountHelpRoute: typeof TabsAccountHelpRoute
   TabsAccountPreferencesRoute: typeof TabsAccountPreferencesRoute
@@ -475,9 +455,8 @@ interface TabsRouteChildren {
 }
 
 const TabsRouteChildren: TabsRouteChildren = {
-  TabsCalendarRoute: TabsCalendarRoute,
-  TabsProfileRoute: TabsProfileRoute,
-  TabsResourcesRoute: TabsResourcesRoute,
+  TabsGalleryRoute: TabsGalleryRoute,
+  TabsQuickLogRoute: TabsQuickLogRoute,
   TabsIndexRoute: TabsIndexRoute,
   TabsAccountHelpRoute: TabsAccountHelpRoute,
   TabsAccountPreferencesRoute: TabsAccountPreferencesRoute,
@@ -506,13 +485,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

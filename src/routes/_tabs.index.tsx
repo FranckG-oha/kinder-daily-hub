@@ -142,7 +142,7 @@ function TodayPage() {
           <QuickAction icon="add_a_photo" label="Add Photo" to="/log/photo" />
           <QuickAction icon="edit_note" label="Write Note" to="/log/note" />
           <QuickAction icon="report" label="Incident" to="/log/incident" />
-          <QuickAction icon="folder_open" label="Resources" to="/resources" />
+          <QuickAction icon="layout-grid" label="Quick Log" to="/quick-log" />
         </section>
       </Page>
     </>
