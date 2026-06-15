@@ -12,8 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TabsRouteImport } from './routes/_tabs'
 import { Route as TabsIndexRouteImport } from './routes/_tabs.index'
+import { Route as TabsScheduleRouteImport } from './routes/_tabs.schedule'
 import { Route as TabsQuickLogRouteImport } from './routes/_tabs.quick-log'
 import { Route as TabsGalleryRouteImport } from './routes/_tabs.gallery'
+import { Route as TabsAttendanceRouteImport } from './routes/_tabs.attendance'
+import { Route as TabsAlertsRouteImport } from './routes/_tabs.alerts'
 import { Route as TabsReportsIndexRouteImport } from './routes/_tabs.reports.index'
 import { Route as TabsMessagesIndexRouteImport } from './routes/_tabs.messages.index'
 import { Route as TabsChildrenIndexRouteImport } from './routes/_tabs.children.index'
@@ -24,6 +27,8 @@ import { Route as TabsMessagesThreadIdRouteImport } from './routes/_tabs.message
 import { Route as TabsLogPhotoRouteImport } from './routes/_tabs.log.photo'
 import { Route as TabsLogNoteRouteImport } from './routes/_tabs.log.note'
 import { Route as TabsLogIncidentRouteImport } from './routes/_tabs.log.incident'
+import { Route as TabsAttendanceSummaryRouteImport } from './routes/_tabs.attendance.summary'
+import { Route as TabsAttendanceScanRouteImport } from './routes/_tabs.attendance.scan'
 import { Route as TabsAccountProfileRouteImport } from './routes/_tabs.account.profile'
 import { Route as TabsAccountPreferencesRouteImport } from './routes/_tabs.account.preferences'
 import { Route as TabsAccountHelpRouteImport } from './routes/_tabs.account.help'
@@ -45,6 +50,11 @@ const TabsIndexRoute = TabsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => TabsRoute,
 } as any)
+const TabsScheduleRoute = TabsScheduleRouteImport.update({
+  id: '/schedule',
+  path: '/schedule',
+  getParentRoute: () => TabsRoute,
+} as any)
 const TabsQuickLogRoute = TabsQuickLogRouteImport.update({
   id: '/quick-log',
   path: '/quick-log',
@@ -53,6 +63,16 @@ const TabsQuickLogRoute = TabsQuickLogRouteImport.update({
 const TabsGalleryRoute = TabsGalleryRouteImport.update({
   id: '/gallery',
   path: '/gallery',
+  getParentRoute: () => TabsRoute,
+} as any)
+const TabsAttendanceRoute = TabsAttendanceRouteImport.update({
+  id: '/attendance',
+  path: '/attendance',
+  getParentRoute: () => TabsRoute,
+} as any)
+const TabsAlertsRoute = TabsAlertsRouteImport.update({
+  id: '/alerts',
+  path: '/alerts',
   getParentRoute: () => TabsRoute,
 } as any)
 const TabsReportsIndexRoute = TabsReportsIndexRouteImport.update({
@@ -106,6 +126,16 @@ const TabsLogIncidentRoute = TabsLogIncidentRouteImport.update({
   path: '/log/incident',
   getParentRoute: () => TabsRoute,
 } as any)
+const TabsAttendanceSummaryRoute = TabsAttendanceSummaryRouteImport.update({
+  id: '/summary',
+  path: '/summary',
+  getParentRoute: () => TabsAttendanceRoute,
+} as any)
+const TabsAttendanceScanRoute = TabsAttendanceScanRouteImport.update({
+  id: '/scan',
+  path: '/scan',
+  getParentRoute: () => TabsAttendanceRoute,
+} as any)
 const TabsAccountProfileRoute = TabsAccountProfileRouteImport.update({
   id: '/account/profile',
   path: '/account/profile',
@@ -140,11 +170,16 @@ const TabsChildrenIdHistoryRoute = TabsChildrenIdHistoryRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof TabsIndexRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/alerts': typeof TabsAlertsRoute
+  '/attendance': typeof TabsAttendanceRouteWithChildren
   '/gallery': typeof TabsGalleryRoute
   '/quick-log': typeof TabsQuickLogRoute
+  '/schedule': typeof TabsScheduleRoute
   '/account/help': typeof TabsAccountHelpRoute
   '/account/preferences': typeof TabsAccountPreferencesRoute
   '/account/profile': typeof TabsAccountProfileRoute
+  '/attendance/scan': typeof TabsAttendanceScanRoute
+  '/attendance/summary': typeof TabsAttendanceSummaryRoute
   '/log/incident': typeof TabsLogIncidentRoute
   '/log/note': typeof TabsLogNoteRoute
   '/log/photo': typeof TabsLogPhotoRoute
@@ -161,12 +196,17 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/alerts': typeof TabsAlertsRoute
+  '/attendance': typeof TabsAttendanceRouteWithChildren
   '/gallery': typeof TabsGalleryRoute
   '/quick-log': typeof TabsQuickLogRoute
+  '/schedule': typeof TabsScheduleRoute
   '/': typeof TabsIndexRoute
   '/account/help': typeof TabsAccountHelpRoute
   '/account/preferences': typeof TabsAccountPreferencesRoute
   '/account/profile': typeof TabsAccountProfileRoute
+  '/attendance/scan': typeof TabsAttendanceScanRoute
+  '/attendance/summary': typeof TabsAttendanceSummaryRoute
   '/log/incident': typeof TabsLogIncidentRoute
   '/log/note': typeof TabsLogNoteRoute
   '/log/photo': typeof TabsLogPhotoRoute
@@ -185,12 +225,17 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_tabs': typeof TabsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/_tabs/alerts': typeof TabsAlertsRoute
+  '/_tabs/attendance': typeof TabsAttendanceRouteWithChildren
   '/_tabs/gallery': typeof TabsGalleryRoute
   '/_tabs/quick-log': typeof TabsQuickLogRoute
+  '/_tabs/schedule': typeof TabsScheduleRoute
   '/_tabs/': typeof TabsIndexRoute
   '/_tabs/account/help': typeof TabsAccountHelpRoute
   '/_tabs/account/preferences': typeof TabsAccountPreferencesRoute
   '/_tabs/account/profile': typeof TabsAccountProfileRoute
+  '/_tabs/attendance/scan': typeof TabsAttendanceScanRoute
+  '/_tabs/attendance/summary': typeof TabsAttendanceSummaryRoute
   '/_tabs/log/incident': typeof TabsLogIncidentRoute
   '/_tabs/log/note': typeof TabsLogNoteRoute
   '/_tabs/log/photo': typeof TabsLogPhotoRoute
@@ -210,11 +255,16 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/sitemap.xml'
+    | '/alerts'
+    | '/attendance'
     | '/gallery'
     | '/quick-log'
+    | '/schedule'
     | '/account/help'
     | '/account/preferences'
     | '/account/profile'
+    | '/attendance/scan'
+    | '/attendance/summary'
     | '/log/incident'
     | '/log/note'
     | '/log/photo'
@@ -231,12 +281,17 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/sitemap.xml'
+    | '/alerts'
+    | '/attendance'
     | '/gallery'
     | '/quick-log'
+    | '/schedule'
     | '/'
     | '/account/help'
     | '/account/preferences'
     | '/account/profile'
+    | '/attendance/scan'
+    | '/attendance/summary'
     | '/log/incident'
     | '/log/note'
     | '/log/photo'
@@ -254,12 +309,17 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_tabs'
     | '/sitemap.xml'
+    | '/_tabs/alerts'
+    | '/_tabs/attendance'
     | '/_tabs/gallery'
     | '/_tabs/quick-log'
+    | '/_tabs/schedule'
     | '/_tabs/'
     | '/_tabs/account/help'
     | '/_tabs/account/preferences'
     | '/_tabs/account/profile'
+    | '/_tabs/attendance/scan'
+    | '/_tabs/attendance/summary'
     | '/_tabs/log/incident'
     | '/_tabs/log/note'
     | '/_tabs/log/photo'
@@ -303,6 +363,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TabsIndexRouteImport
       parentRoute: typeof TabsRoute
     }
+    '/_tabs/schedule': {
+      id: '/_tabs/schedule'
+      path: '/schedule'
+      fullPath: '/schedule'
+      preLoaderRoute: typeof TabsScheduleRouteImport
+      parentRoute: typeof TabsRoute
+    }
     '/_tabs/quick-log': {
       id: '/_tabs/quick-log'
       path: '/quick-log'
@@ -315,6 +382,20 @@ declare module '@tanstack/react-router' {
       path: '/gallery'
       fullPath: '/gallery'
       preLoaderRoute: typeof TabsGalleryRouteImport
+      parentRoute: typeof TabsRoute
+    }
+    '/_tabs/attendance': {
+      id: '/_tabs/attendance'
+      path: '/attendance'
+      fullPath: '/attendance'
+      preLoaderRoute: typeof TabsAttendanceRouteImport
+      parentRoute: typeof TabsRoute
+    }
+    '/_tabs/alerts': {
+      id: '/_tabs/alerts'
+      path: '/alerts'
+      fullPath: '/alerts'
+      preLoaderRoute: typeof TabsAlertsRouteImport
       parentRoute: typeof TabsRoute
     }
     '/_tabs/reports/': {
@@ -387,6 +468,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TabsLogIncidentRouteImport
       parentRoute: typeof TabsRoute
     }
+    '/_tabs/attendance/summary': {
+      id: '/_tabs/attendance/summary'
+      path: '/summary'
+      fullPath: '/attendance/summary'
+      preLoaderRoute: typeof TabsAttendanceSummaryRouteImport
+      parentRoute: typeof TabsAttendanceRoute
+    }
+    '/_tabs/attendance/scan': {
+      id: '/_tabs/attendance/scan'
+      path: '/scan'
+      fullPath: '/attendance/scan'
+      preLoaderRoute: typeof TabsAttendanceScanRouteImport
+      parentRoute: typeof TabsAttendanceRoute
+    }
     '/_tabs/account/profile': {
       id: '/_tabs/account/profile'
       path: '/account/profile'
@@ -432,9 +527,26 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface TabsAttendanceRouteChildren {
+  TabsAttendanceScanRoute: typeof TabsAttendanceScanRoute
+  TabsAttendanceSummaryRoute: typeof TabsAttendanceSummaryRoute
+}
+
+const TabsAttendanceRouteChildren: TabsAttendanceRouteChildren = {
+  TabsAttendanceScanRoute: TabsAttendanceScanRoute,
+  TabsAttendanceSummaryRoute: TabsAttendanceSummaryRoute,
+}
+
+const TabsAttendanceRouteWithChildren = TabsAttendanceRoute._addFileChildren(
+  TabsAttendanceRouteChildren,
+)
+
 interface TabsRouteChildren {
+  TabsAlertsRoute: typeof TabsAlertsRoute
+  TabsAttendanceRoute: typeof TabsAttendanceRouteWithChildren
   TabsGalleryRoute: typeof TabsGalleryRoute
   TabsQuickLogRoute: typeof TabsQuickLogRoute
+  TabsScheduleRoute: typeof TabsScheduleRoute
   TabsIndexRoute: typeof TabsIndexRoute
   TabsAccountHelpRoute: typeof TabsAccountHelpRoute
   TabsAccountPreferencesRoute: typeof TabsAccountPreferencesRoute
@@ -455,8 +567,11 @@ interface TabsRouteChildren {
 }
 
 const TabsRouteChildren: TabsRouteChildren = {
+  TabsAlertsRoute: TabsAlertsRoute,
+  TabsAttendanceRoute: TabsAttendanceRouteWithChildren,
   TabsGalleryRoute: TabsGalleryRoute,
   TabsQuickLogRoute: TabsQuickLogRoute,
+  TabsScheduleRoute: TabsScheduleRoute,
   TabsIndexRoute: TabsIndexRoute,
   TabsAccountHelpRoute: TabsAccountHelpRoute,
   TabsAccountPreferencesRoute: TabsAccountPreferencesRoute,
