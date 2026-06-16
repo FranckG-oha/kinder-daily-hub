@@ -25,10 +25,10 @@ export const Route = createFileRoute("/_tabs/children/")({
 type Filter = "all" | "present" | "late" | "absent" | "allergies";
 
 const statusDot: Record<AttendanceStatus, string> = {
-  present: "bg-success",
-  late: "bg-warning",
-  absent: "bg-destructive",
-  left: "bg-muted-foreground",
+  present: "bg-status-present",
+  late: "bg-status-late",
+  absent: "bg-status-absent",
+  left: "bg-status-left",
 };
 
 const statusLabel: Record<AttendanceStatus, string> = {
