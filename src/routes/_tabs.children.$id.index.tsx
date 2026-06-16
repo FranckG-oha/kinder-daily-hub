@@ -244,7 +244,7 @@ function ChildPage() {
             Tuteurs
           </h2>
           <ul className="mt-3 divide-y divide-border/60">
-            {child.guardians.map((g) => (
+            {child.guardians.map((g: { name: string; phone: string; relation: string }) => (
               <li key={g.phone} className="flex items-center gap-3 py-3">
                 <AvatarInitial name={g.name} size={36} />
                 <div className="flex-1">
