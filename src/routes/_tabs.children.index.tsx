@@ -165,7 +165,7 @@ function ClassListPage() {
                   {c.allergies.length > 0 && (
                     <span
                       title={`Allergie: ${c.allergies.join(", ")}`}
-                      className="inline-flex h-7 items-center gap-1 rounded-full bg-warning-tint px-2 text-[10px] font-semibold text-warning"
+                      className="inline-flex h-7 items-center gap-1 rounded-full bg-warning-tint px-2 text-[10px] font-semibold text-warning-ink"
                     >
                       <AlertTriangle size={12} strokeWidth={2} />
                       {c.allergies[0]}
