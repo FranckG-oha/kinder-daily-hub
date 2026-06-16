@@ -1,151 +1,188 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useMemo, useState } from "react";
+import { Search, AlertTriangle } from "lucide-react";
 import { AppHeader } from "@/components/app-header";
 import { Page } from "@/components/page";
-import { Icon } from "@/components/icon";
-import { attendanceToday, children, myClassroom, type AttendanceStatus } from "@/lib/mock";
+import {
+  attendanceToday,
+  children,
+  myClassroom,
+  ageFromBirthdate,
+  type AttendanceStatus,
+} from "@/lib/mock";
 
+// T-11 — My Class (Class List)
 export const Route = createFileRoute("/_tabs/children/")({
   head: () => ({
     meta: [
-      { title: "Morning Check-in — Digital Sanctuary" },
-      { name: "description", content: "Faire l'appel du matin : présent, en retard, absent." },
-      { property: "og:title", content: "Morning Check-in — Digital Sanctuary" },
-      { property: "og:description", content: "Appel du matin de la classe." },
+      { title: "My Class — Digital Sanctuary" },
+      { name: "description", content: "Liste de la classe avec statut, allergies et accès rapide aux fiches enfants." },
     ],
   }),
-  component: ChildrenPage,
+  component: ClassListPage,
 });
 
-function ChildrenPage() {
-  const [state, setState] = useState<Record<string, AttendanceStatus>>(attendanceToday);
+type Filter = "all" | "present" | "late" | "absent" | "allergies";
 
-  function setAll() {
-    const next: Record<string, AttendanceStatus> = {};
-    children.forEach((c) => (next[c.id] = "present"));
-    setState(next);
-  }
+const statusDot: Record<AttendanceStatus, string> = {
+  present: "bg-success",
+  late: "bg-warning",
+  absent: "bg-destructive",
+  left: "bg-muted-foreground",
+};
+
+const statusLabel: Record<AttendanceStatus, string> = {
+  present: "Présent",
+  late: "En retard",
+  absent: "Absent",
+  left: "Parti",
+};
+
+function ClassListPage() {
+  const [q, setQ] = useState("");
+  const [filter, setFilter] = useState<Filter>("all");
+
+  const filtered = useMemo(() => {
+    return children.filter((c) => {
+      const s = (attendanceToday[c.id] ?? "present") as AttendanceStatus;
+      if (filter === "allergies" && c.allergies.length === 0) return false;
+      if (filter !== "all" && filter !== "allergies" && s !== filter) return false;
+      if (q) {
+        const hay = `${c.firstName} ${c.lastName}`.toLowerCase();
+        if (!hay.includes(q.toLowerCase())) return false;
+      }
+      return true;
+    });
+  }, [q, filter]);
+
+  const counts = useMemo(() => {
+    const c = { present: 0, late: 0, absent: 0 };
+    children.forEach((ch) => {
+      const s = attendanceToday[ch.id] ?? "present";
+      if (s === "present") c.present++;
+      else if (s === "late") c.late++;
+      else if (s === "absent") c.absent++;
+    });
+    return c;
+  }, []);
 
   return (
     <>
       <AppHeader />
       <Page>
-        <div className="flex items-end justify-between gap-4">
-          <div>
-            <h2 className="font-display text-base font-semibold text-muted-foreground">
-              {myClassroom.name}
-            </h2>
-            <h1 className="mt-1 font-display text-4xl font-extrabold leading-tight tracking-tight">
-              Morning<br />Check-in
-            </h1>
-          </div>
-        </div>
-        <motion.button
-          whileTap={{ scale: 0.97 }}
-          onClick={setAll}
-          className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 font-semibold text-primary-foreground shadow-card"
-        >
-          <Icon name="check_circle" filled size={20} />
-          Mark All Present
-        </motion.button>
+        <header>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+            {myClassroom.name}
+          </p>
+          <h1 className="mt-1 font-display text-[28px] font-extrabold leading-tight tracking-tight">
+            My Class
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {children.length} enfants · {counts.present} présents · {counts.late} en retard ·{" "}
+            {counts.absent} absents
+          </p>
+        </header>
 
-        <ul className="mt-6 space-y-4">
-          {children.map((c) => (
-            <li key={c.id} className="rounded-3xl bg-secondary p-4">
-              <Link
-                to="/children/$id"
-                params={{ id: c.id }}
-                className="flex items-center gap-3"
+        <div className="relative mt-5">
+          <Search
+            size={18}
+            className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"
+            strokeWidth={1.75}
+          />
+          <input
+            type="search"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Rechercher un enfant…"
+            className="h-12 w-full rounded-full border border-border bg-card pl-11 pr-4 text-sm shadow-sm outline-none placeholder:text-muted-foreground focus:border-primary"
+          />
+        </div>
+
+        <div className="mt-4 -mx-5 flex gap-2 overflow-x-auto px-5 pb-1">
+          {(
+            [
+              ["all", `Tous · ${children.length}`],
+              ["present", `Présents · ${counts.present}`],
+              ["late", `Retards · ${counts.late}`],
+              ["absent", `Absents · ${counts.absent}`],
+              ["allergies", "Allergies"],
+            ] as [Filter, string][]
+          ).map(([key, label]) => {
+            const on = filter === key;
+            return (
+              <button
+                key={key}
+                onClick={() => setFilter(key)}
+                aria-pressed={on}
+                className={
+                  "shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition-colors " +
+                  (on
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-card text-foreground/70 border border-border")
+                }
               >
-                <img
-                  src={c.avatar}
-                  alt=""
-                  className={
-                    "h-14 w-14 rounded-full bg-card object-cover " +
-                    (state[c.id] === "absent" ? "opacity-60 grayscale" : "")
-                  }
-                />
-                <div className="flex-1 min-w-0">
-                  <p className="font-display text-xl font-bold">{c.firstName}</p>
-                  {c.allergies.length > 0 ? (
-                    <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-container-peach px-2 py-0.5 text-[11px] font-semibold text-on-container-peach">
-                      <Icon name="info" filled size={12} /> allergie : {c.allergies.join(", ")}
-                    </span>
-                  ) : (
-                    <p className="text-xs text-muted-foreground">
-                      {state[c.id] === "late"
-                        ? "Attendu après 9:00"
-                        : state[c.id] === "absent"
-                          ? "Absent aujourd'hui"
-                          : "Arrivé 8:45"}
+                {label}
+              </button>
+            );
+          })}
+        </div>
+
+        <ul className="mt-4 space-y-2">
+          {filtered.map((c) => {
+            const s = (attendanceToday[c.id] ?? "present") as AttendanceStatus;
+            return (
+              <li key={c.id}>
+                <Link
+                  to="/children/$id"
+                  params={{ id: c.id }}
+                  className="flex items-center gap-3 rounded-2xl bg-card p-3 shadow-card transition-transform active:scale-[0.99]"
+                >
+                  <div className="relative">
+                    <img
+                      src={c.avatar}
+                      alt=""
+                      className={
+                        "h-12 w-12 rounded-full bg-secondary object-cover " +
+                        (s === "absent" ? "opacity-60 grayscale" : "")
+                      }
+                    />
+                    <span
+                      aria-hidden
+                      className={
+                        "absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full ring-2 ring-card " +
+                        statusDot[s]
+                      }
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-display text-[15px] font-bold leading-tight">
+                      {c.firstName} {c.lastName}
                     </p>
+                    <p className="text-[11px] text-muted-foreground">
+                      {ageFromBirthdate(c.birthdate)} · {statusLabel[s]}
+                    </p>
+                  </div>
+                  {c.allergies.length > 0 && (
+                    <span
+                      title={`Allergie: ${c.allergies.join(", ")}`}
+                      className="inline-flex h-7 items-center gap-1 rounded-full bg-warning-tint px-2 text-[10px] font-semibold text-warning"
+                    >
+                      <AlertTriangle size={12} strokeWidth={2} />
+                      {c.allergies[0]}
+                    </span>
                   )}
-                </div>
-              </Link>
-              <div className="mt-3 flex items-center gap-1 rounded-full bg-card p-1 shadow-card">
-                <Toggle
-                  active={state[c.id] === "present"}
-                  tone="present"
-                  onClick={() => setState({ ...state, [c.id]: "present" })}
-                  icon="check"
-                  label="Present"
-                />
-                <Toggle
-                  active={state[c.id] === "late"}
-                  tone="late"
-                  onClick={() => setState({ ...state, [c.id]: "late" })}
-                  icon="schedule"
-                  label="Late"
-                />
-                <Toggle
-                  active={state[c.id] === "absent"}
-                  tone="absent"
-                  onClick={() => setState({ ...state, [c.id]: "absent" })}
-                  icon="close"
-                  label="Absent"
-                />
-              </div>
-            </li>
-          ))}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
+
+        {filtered.length === 0 && (
+          <p className="mt-10 text-center text-sm text-muted-foreground">
+            Aucun enfant ne correspond.
+          </p>
+        )}
       </Page>
     </>
-  );
-}
-
-function Toggle({
-  active,
-  tone,
-  onClick,
-  icon,
-  label,
-}: {
-  active: boolean;
-  tone: "present" | "late" | "absent";
-  onClick: () => void;
-  icon: string;
-  label: string;
-}) {
-  const toneClass = active
-    ? tone === "present"
-      ? "bg-accent text-accent-foreground"
-      : tone === "absent"
-        ? "bg-destructive/15 text-destructive"
-        : "bg-secondary text-foreground"
-    : "text-muted-foreground";
-  return (
-    <button
-      type="button"
-      aria-label={label}
-      aria-pressed={active}
-      onClick={onClick}
-      className={
-        "flex h-11 flex-1 items-center justify-center rounded-full transition-transform active:scale-95 " +
-        toneClass
-      }
-    >
-      <Icon name={icon} filled={active} size={20} />
-    </button>
   );
 }
