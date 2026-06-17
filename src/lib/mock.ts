@@ -265,6 +265,76 @@ export const todayAlerts: TodayAlert[] = [
 // ─── helpers ────────────────────────────────────────────
 
 export const getChild = (id: string) => children.find((c) => c.id === id);
+
+// ─── Personal info (T-13) ────────────────────────────────
+
+export type PersonalInfo = {
+  preferredName: string;
+  pronouns: string;
+  languagesHome: string[];
+  livesWith: string;
+  siblings: { name: string; age: string }[];
+  comfortItem: string;
+  favoriteActivities: string[];
+  routines: { label: string; value: string }[];
+  culturalNotes: string;
+};
+
+export const personalByChild: Record<string, PersonalInfo> = {
+  lea: {
+    preferredName: "Léa", pronouns: "elle",
+    languagesHome: ["Français"], livesWith: "Mère (garde principale)",
+    siblings: [{ name: "Hugo", age: "5 ans" }],
+    comfortItem: "Doudou lapin gris",
+    favoriteActivities: ["Transvasement", "Tour rose", "Chant"],
+    routines: [
+      { label: "Réveil", value: "07:00" },
+      { label: "Coucher", value: "20:00" },
+      { label: "Sieste à la maison", value: "13:00 — 14:30" },
+    ],
+    culturalNotes: "Famille végétarienne — pas de viande au repas.",
+  },
+  noah: {
+    preferredName: "Noah", pronouns: "il",
+    languagesHome: ["Français", "Anglais"], livesWith: "Père & mère",
+    siblings: [], comfortItem: "Petit ours bleu",
+    favoriteActivities: ["Lecture", "Voitures"],
+    routines: [
+      { label: "Réveil", value: "06:45" },
+      { label: "Coucher", value: "19:30" },
+    ],
+    culturalNotes: "Famille bilingue FR/EN — encourager les deux langues.",
+  },
+  ines: {
+    preferredName: "Inès", pronouns: "elle",
+    languagesHome: ["Français"], livesWith: "Mère",
+    siblings: [{ name: "Lina", age: "8 ans" }],
+    comfortItem: "Tétine rose",
+    favoriteActivities: ["Vie pratique", "Puzzles"],
+    routines: [
+      { label: "Réveil", value: "07:15" },
+      { label: "Coucher", value: "20:15" },
+    ],
+    culturalNotes: "—",
+  },
+};
+
+export const getPersonal = (id: string): PersonalInfo => {
+  return (
+    personalByChild[id] ?? {
+      preferredName: getChild(id)?.firstName ?? "",
+      pronouns: "—",
+      languagesHome: ["Français"],
+      livesWith: "—",
+      siblings: [],
+      comfortItem: "—",
+      favoriteActivities: [],
+      routines: [],
+      culturalNotes: "—",
+    }
+  );
+};
+
 export const getThread = (id: string) => threads.find((t) => t.id === id);
 export const getReportForChild = (childId: string) =>
   reportsToday.find((r) => r.childId === childId);
