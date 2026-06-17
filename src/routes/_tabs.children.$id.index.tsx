@@ -43,14 +43,14 @@ export const Route = createFileRoute("/_tabs/children/$id/")({
 });
 
 const tabs = [
-  { key: "overview", label: "Aperçu" },
-  { key: "personal", label: "Personnel" },
-  { key: "medical", label: "Médical" },
-  { key: "emergency", label: "Urgence" },
-  { key: "pickup", label: "Pickup" },
-  { key: "attendance", label: "Présence" },
-  { key: "reports", label: "Rapports" },
-] as const;
+  { key: "overview", label: "Aperçu", to: "/children/$id" as const },
+  { key: "personal", label: "Personnel", to: "/children/$id/personal" as const },
+  { key: "medical", label: "Médical", to: "/children/$id" as const },
+  { key: "emergency", label: "Urgence", to: "/children/$id" as const },
+  { key: "pickup", label: "Pickup", to: "/children/$id" as const },
+  { key: "attendance", label: "Présence", to: "/children/$id" as const },
+  { key: "reports", label: "Rapports", to: "/children/$id/history" as const },
+];
 
 function ChildPage() {
   const { child } = Route.useLoaderData();
@@ -151,20 +151,25 @@ function ChildPage() {
           aria-label="Sections de la fiche enfant"
           className="-mx-5 mt-5 flex gap-2 overflow-x-auto px-5 pb-1"
         >
-          {tabs.map((t, i) => (
-            <button
-              key={t.key}
-              aria-current={i === 0 ? "page" : undefined}
-              className={
-                "shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition-colors " +
-                (i === 0
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-card text-foreground/70 border border-border")
-              }
-            >
-              {t.label}
-            </button>
-          ))}
+          {tabs.map((t, i) => {
+            const active = i === 0;
+            return (
+              <Link
+                key={t.key}
+                to={t.to}
+                params={{ id: child.id }}
+                aria-current={active ? "page" : undefined}
+                className={
+                  "shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition-colors " +
+                  (active
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-card text-foreground/70 border border-border")
+                }
+              >
+                {t.label}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Allergies */}
