@@ -174,7 +174,7 @@ function PersonalPage() {
             title="Langues à la maison"
           >
             <div className="mt-2 flex flex-wrap gap-1.5">
-              {personal.languagesHome.map((l) => (
+              {personal.languagesHome.map((l: string) => (
                 <span
                   key={l}
                   className="rounded-full bg-secondary px-2.5 py-1 text-[11px] font-medium"
@@ -204,7 +204,7 @@ function PersonalPage() {
             <p className="mt-2 text-sm text-muted-foreground">Enfant unique.</p>
           ) : (
             <ul className="mt-3 space-y-2">
-              {personal.siblings.map((s) => (
+              {personal.siblings.map((s: { name: string; age: string }) => (
                 <li
                   key={s.name}
                   className="flex items-center gap-3 rounded-xl bg-secondary/40 px-3 py-2"
@@ -240,7 +240,7 @@ function PersonalPage() {
             <p className="mt-2 text-sm text-muted-foreground">À renseigner.</p>
           ) : (
             <div className="mt-2 flex flex-wrap gap-1.5">
-              {personal.favoriteActivities.map((a) => (
+              {personal.favoriteActivities.map((a: string) => (
                 <span
                   key={a}
                   className="rounded-full bg-primary-light px-2.5 py-1 text-[11px] font-medium text-primary"
@@ -262,7 +262,7 @@ function PersonalPage() {
               </h2>
             </div>
             <dl className="mt-3 divide-y divide-border/60 text-sm">
-              {personal.routines.map((r) => (
+              {personal.routines.map((r: { label: string; value: string }) => (
                 <Row key={r.label} label={r.label} value={r.value} />
               ))}
             </dl>
