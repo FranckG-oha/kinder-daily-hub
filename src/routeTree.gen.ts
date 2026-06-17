@@ -35,6 +35,7 @@ import { Route as TabsAccountHelpRouteImport } from './routes/_tabs.account.help
 import { Route as TabsChildrenIdIndexRouteImport } from './routes/_tabs.children.$id.index'
 import { Route as TabsChildrenIdReportRouteImport } from './routes/_tabs.children.$id.report'
 import { Route as TabsChildrenIdPersonalRouteImport } from './routes/_tabs.children.$id.personal'
+import { Route as TabsChildrenIdMedicalRouteImport } from './routes/_tabs.children.$id.medical'
 import { Route as TabsChildrenIdHistoryRouteImport } from './routes/_tabs.children.$id.history'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -167,6 +168,11 @@ const TabsChildrenIdPersonalRoute = TabsChildrenIdPersonalRouteImport.update({
   path: '/children/$id/personal',
   getParentRoute: () => TabsRoute,
 } as any)
+const TabsChildrenIdMedicalRoute = TabsChildrenIdMedicalRouteImport.update({
+  id: '/children/$id/medical',
+  path: '/children/$id/medical',
+  getParentRoute: () => TabsRoute,
+} as any)
 const TabsChildrenIdHistoryRoute = TabsChildrenIdHistoryRouteImport.update({
   id: '/children/$id/history',
   path: '/children/$id/history',
@@ -197,6 +203,7 @@ export interface FileRoutesByFullPath {
   '/messages/': typeof TabsMessagesIndexRoute
   '/reports/': typeof TabsReportsIndexRoute
   '/children/$id/history': typeof TabsChildrenIdHistoryRoute
+  '/children/$id/medical': typeof TabsChildrenIdMedicalRoute
   '/children/$id/personal': typeof TabsChildrenIdPersonalRoute
   '/children/$id/report': typeof TabsChildrenIdReportRoute
   '/children/$id/': typeof TabsChildrenIdIndexRoute
@@ -225,6 +232,7 @@ export interface FileRoutesByTo {
   '/messages': typeof TabsMessagesIndexRoute
   '/reports': typeof TabsReportsIndexRoute
   '/children/$id/history': typeof TabsChildrenIdHistoryRoute
+  '/children/$id/medical': typeof TabsChildrenIdMedicalRoute
   '/children/$id/personal': typeof TabsChildrenIdPersonalRoute
   '/children/$id/report': typeof TabsChildrenIdReportRoute
   '/children/$id': typeof TabsChildrenIdIndexRoute
@@ -255,6 +263,7 @@ export interface FileRoutesById {
   '/_tabs/messages/': typeof TabsMessagesIndexRoute
   '/_tabs/reports/': typeof TabsReportsIndexRoute
   '/_tabs/children/$id/history': typeof TabsChildrenIdHistoryRoute
+  '/_tabs/children/$id/medical': typeof TabsChildrenIdMedicalRoute
   '/_tabs/children/$id/personal': typeof TabsChildrenIdPersonalRoute
   '/_tabs/children/$id/report': typeof TabsChildrenIdReportRoute
   '/_tabs/children/$id/': typeof TabsChildrenIdIndexRoute
@@ -285,6 +294,7 @@ export interface FileRouteTypes {
     | '/messages/'
     | '/reports/'
     | '/children/$id/history'
+    | '/children/$id/medical'
     | '/children/$id/personal'
     | '/children/$id/report'
     | '/children/$id/'
@@ -313,6 +323,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/reports'
     | '/children/$id/history'
+    | '/children/$id/medical'
     | '/children/$id/personal'
     | '/children/$id/report'
     | '/children/$id'
@@ -342,6 +353,7 @@ export interface FileRouteTypes {
     | '/_tabs/messages/'
     | '/_tabs/reports/'
     | '/_tabs/children/$id/history'
+    | '/_tabs/children/$id/medical'
     | '/_tabs/children/$id/personal'
     | '/_tabs/children/$id/report'
     | '/_tabs/children/$id/'
@@ -536,6 +548,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TabsChildrenIdPersonalRouteImport
       parentRoute: typeof TabsRoute
     }
+    '/_tabs/children/$id/medical': {
+      id: '/_tabs/children/$id/medical'
+      path: '/children/$id/medical'
+      fullPath: '/children/$id/medical'
+      preLoaderRoute: typeof TabsChildrenIdMedicalRouteImport
+      parentRoute: typeof TabsRoute
+    }
     '/_tabs/children/$id/history': {
       id: '/_tabs/children/$id/history'
       path: '/children/$id/history'
@@ -581,6 +600,7 @@ interface TabsRouteChildren {
   TabsMessagesIndexRoute: typeof TabsMessagesIndexRoute
   TabsReportsIndexRoute: typeof TabsReportsIndexRoute
   TabsChildrenIdHistoryRoute: typeof TabsChildrenIdHistoryRoute
+  TabsChildrenIdMedicalRoute: typeof TabsChildrenIdMedicalRoute
   TabsChildrenIdPersonalRoute: typeof TabsChildrenIdPersonalRoute
   TabsChildrenIdReportRoute: typeof TabsChildrenIdReportRoute
   TabsChildrenIdIndexRoute: typeof TabsChildrenIdIndexRoute
@@ -607,6 +627,7 @@ const TabsRouteChildren: TabsRouteChildren = {
   TabsMessagesIndexRoute: TabsMessagesIndexRoute,
   TabsReportsIndexRoute: TabsReportsIndexRoute,
   TabsChildrenIdHistoryRoute: TabsChildrenIdHistoryRoute,
+  TabsChildrenIdMedicalRoute: TabsChildrenIdMedicalRoute,
   TabsChildrenIdPersonalRoute: TabsChildrenIdPersonalRoute,
   TabsChildrenIdReportRoute: TabsChildrenIdReportRoute,
   TabsChildrenIdIndexRoute: TabsChildrenIdIndexRoute,

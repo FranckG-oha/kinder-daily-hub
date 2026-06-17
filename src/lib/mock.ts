@@ -335,6 +335,83 @@ export const getPersonal = (id: string): PersonalInfo => {
   );
 };
 
+// ─── Medical info (T-14) ─────────────────────────────────
+
+export type MedicalInfo = {
+  bloodType: string;
+  weightKg: number;
+  heightCm: number;
+  doctor: { name: string; phone: string; clinic: string };
+  pediatrician?: { name: string; phone: string };
+  conditions: string[];
+  medications: { name: string; dose: string; schedule: string; authorized: boolean }[];
+  vaccines: { name: string; date: string; status: "ok" | "due" | "late" }[];
+  lastCheckup: string;
+  insurance: { provider: string; number: string };
+  notes: string;
+};
+
+export const medicalByChild: Record<string, MedicalInfo> = {
+  lea: {
+    bloodType: "A+", weightKg: 14.2, heightCm: 92,
+    doctor: { name: "Dr. Sophie Martin", phone: "+33 1 42 33 44 55", clinic: "Cabinet Pasteur" },
+    pediatrician: { name: "Dr. Léo Vidal", phone: "+33 1 44 55 66 77" },
+    conditions: ["Asthme léger"],
+    medications: [
+      { name: "Ventoline", dose: "2 puffs", schedule: "Si besoin / effort", authorized: true },
+    ],
+    vaccines: [
+      { name: "DTP", date: "2023-04-10", status: "ok" },
+      { name: "ROR", date: "2023-09-12", status: "ok" },
+      { name: "Rappel DTP", date: "2026-08-01", status: "due" },
+    ],
+    lastCheckup: "2026-03-18",
+    insurance: { provider: "CPAM", number: "1 85 03 14 075 042 12" },
+    notes: "Crise d'asthme rare, déclenchée par l'effort. Ventoline dans le casier.",
+  },
+  noah: {
+    bloodType: "O+", weightKg: 15.8, heightCm: 95,
+    doctor: { name: "Dr. Anne Roche", phone: "+33 1 45 67 89 10", clinic: "Maison médicale Voltaire" },
+    conditions: [],
+    medications: [],
+    vaccines: [
+      { name: "DTP", date: "2022-11-02", status: "ok" },
+      { name: "ROR", date: "2023-05-14", status: "ok" },
+    ],
+    lastCheckup: "2026-02-04",
+    insurance: { provider: "MGEN", number: "2 21 11 92 014 088 33" },
+    notes: "—",
+  },
+  ines: {
+    bloodType: "B-", weightKg: 13.5, heightCm: 90,
+    doctor: { name: "Dr. Karim Hadj", phone: "+33 1 48 22 11 09", clinic: "Cabinet République" },
+    conditions: ["Intolérance lactose"],
+    medications: [
+      { name: "Doliprane", dose: "5 ml", schedule: "Si fièvre > 38°C", authorized: true },
+    ],
+    vaccines: [
+      { name: "DTP", date: "2023-06-21", status: "ok" },
+      { name: "ROR", date: "2023-12-04", status: "late" },
+    ],
+    lastCheckup: "2026-04-22",
+    insurance: { provider: "CPAM", number: "1 22 06 75 110 022 41" },
+    notes: "Régime sans lait — vérifier étiquettes goûter.",
+  },
+};
+
+export const getMedical = (id: string): MedicalInfo => {
+  return (
+    medicalByChild[id] ?? {
+      bloodType: "—", weightKg: 0, heightCm: 0,
+      doctor: { name: "—", phone: "—", clinic: "—" },
+      conditions: [], medications: [], vaccines: [],
+      lastCheckup: "—",
+      insurance: { provider: "—", number: "—" },
+      notes: "—",
+    }
+  );
+};
+
 export const getThread = (id: string) => threads.find((t) => t.id === id);
 export const getReportForChild = (childId: string) =>
   reportsToday.find((r) => r.childId === childId);
