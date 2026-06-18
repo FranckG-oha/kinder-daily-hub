@@ -47,7 +47,7 @@ const tabs = [
   { key: "overview", label: "Aperçu", to: "/children/$id" as const },
   { key: "personal", label: "Personnel", to: "/children/$id/personal" as const },
   { key: "medical", label: "Médical", to: "/children/$id/medical" as const },
-  { key: "emergency", label: "Urgence", to: "/children/$id" as const },
+  { key: "emergency", label: "Urgence", to: "/children/$id/emergency" as const },
   { key: "pickup", label: "Pickup", to: "/children/$id" as const },
   { key: "attendance", label: "Présence", to: "/children/$id" as const },
   { key: "reports", label: "Rapports", to: "/children/$id/history" as const },
