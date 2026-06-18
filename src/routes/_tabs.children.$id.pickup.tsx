@@ -26,6 +26,7 @@ import {
   type Child,
   type PickupEvent,
   type PickupPerson,
+  type PickupInfo,
 } from "@/lib/mock";
 
 // T-16 — Pickup
@@ -67,7 +68,10 @@ const statusLabel: Record<PickupEvent["status"], string> = {
 };
 
 function PickupPage() {
-  const { child, pickup } = Route.useLoaderData();
+  const { child, pickup } = Route.useLoaderData() as {
+    child: Child;
+    pickup: PickupInfo;
+  };
 
   return (
     <>
@@ -279,7 +283,7 @@ function PickupPage() {
               <h2 className="text-sm font-semibold">Personnes non autorisées</h2>
             </div>
             <ul className="mt-2 space-y-2">
-              {pickup.blockedPeople.map((b) => (
+              {pickup.blockedPeople.map((b: { name: string; reason: string }) => (
                 <li key={b.name} className="rounded-xl bg-card px-3 py-2">
                   <p className="text-sm font-semibold">{b.name}</p>
                   <p className="text-[11px] text-muted-foreground">{b.reason}</p>
