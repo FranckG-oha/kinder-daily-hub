@@ -412,6 +412,80 @@ export const getMedical = (id: string): MedicalInfo => {
   );
 };
 
+export type EmergencyContact = {
+  name: string;
+  relation: string;
+  phone: string;
+  altPhone?: string;
+  priority: 1 | 2 | 3;
+  canPickup: boolean;
+};
+
+export type EmergencyInfo = {
+  contacts: EmergencyContact[];
+  hospital: { name: string; phone: string; address: string };
+  poisonControl: string;
+  evacuationPlan: string;
+  consentMedicalCare: boolean;
+  consentPhotos: boolean;
+  specialInstructions: string;
+};
+
+export const emergencyByChild: Record<string, EmergencyInfo> = {
+  lea: {
+    contacts: [
+      { name: "Marie Dupont", relation: "Mère", phone: "+33 6 12 34 56 78", priority: 1, canPickup: true },
+      { name: "Pierre Dupont", relation: "Père", phone: "+33 6 11 22 33 44", altPhone: "+33 1 42 00 11 22", priority: 2, canPickup: true },
+      { name: "Jeanne Dupont", relation: "Grand-mère", phone: "+33 6 88 77 66 55", priority: 3, canPickup: true },
+    ],
+    hospital: { name: "Hôpital Necker — Enfants malades", phone: "+33 1 44 49 40 00", address: "149 Rue de Sèvres, 75015 Paris" },
+    poisonControl: "+33 1 40 05 48 48",
+    evacuationPlan: "Sortie principale → Square Saint-Lambert (point de rassemblement A).",
+    consentMedicalCare: true,
+    consentPhotos: true,
+    specialInstructions: "En cas de crise d'asthme, administrer Ventoline puis appeler la mère.",
+  },
+  noah: {
+    contacts: [
+      { name: "Julien Bernard", relation: "Père", phone: "+33 6 98 76 54 32", priority: 1, canPickup: true },
+      { name: "Camille Bernard", relation: "Mère", phone: "+33 6 14 25 36 47", priority: 2, canPickup: true },
+    ],
+    hospital: { name: "Hôpital Trousseau", phone: "+33 1 44 73 74 75", address: "26 Avenue du Dr Arnold Netter, 75012 Paris" },
+    poisonControl: "+33 1 40 05 48 48",
+    evacuationPlan: "Sortie cour arrière → Place Voltaire (point de rassemblement B).",
+    consentMedicalCare: true,
+    consentPhotos: false,
+    specialInstructions: "—",
+  },
+  ines: {
+    contacts: [
+      { name: "Sophie Moreau", relation: "Mère", phone: "+33 6 55 44 33 22", priority: 1, canPickup: true },
+      { name: "Antoine Moreau", relation: "Père", phone: "+33 6 23 45 67 89", priority: 2, canPickup: true },
+      { name: "Lucie Moreau", relation: "Tante", phone: "+33 6 67 89 01 23", priority: 3, canPickup: false },
+    ],
+    hospital: { name: "Hôpital Robert-Debré", phone: "+33 1 40 03 20 00", address: "48 Bd Sérurier, 75019 Paris" },
+    poisonControl: "+33 1 40 05 48 48",
+    evacuationPlan: "Sortie principale → Parvis église (point de rassemblement A).",
+    consentMedicalCare: true,
+    consentPhotos: true,
+    specialInstructions: "Allergies œuf/lait — vérifier composition avant tout traitement.",
+  },
+};
+
+export const getEmergency = (id: string): EmergencyInfo => {
+  return (
+    emergencyByChild[id] ?? {
+      contacts: [],
+      hospital: { name: "—", phone: "—", address: "—" },
+      poisonControl: "—",
+      evacuationPlan: "—",
+      consentMedicalCare: false,
+      consentPhotos: false,
+      specialInstructions: "—",
+    }
+  );
+};
+
 export const getThread = (id: string) => threads.find((t) => t.id === id);
 export const getReportForChild = (childId: string) =>
   reportsToday.find((r) => r.childId === childId);
