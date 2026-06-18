@@ -34,6 +34,7 @@ import { Route as TabsAccountPreferencesRouteImport } from './routes/_tabs.accou
 import { Route as TabsAccountHelpRouteImport } from './routes/_tabs.account.help'
 import { Route as TabsChildrenIdIndexRouteImport } from './routes/_tabs.children.$id.index'
 import { Route as TabsChildrenIdReportRouteImport } from './routes/_tabs.children.$id.report'
+import { Route as TabsChildrenIdPickupRouteImport } from './routes/_tabs.children.$id.pickup'
 import { Route as TabsChildrenIdPersonalRouteImport } from './routes/_tabs.children.$id.personal'
 import { Route as TabsChildrenIdMedicalRouteImport } from './routes/_tabs.children.$id.medical'
 import { Route as TabsChildrenIdHistoryRouteImport } from './routes/_tabs.children.$id.history'
@@ -164,6 +165,11 @@ const TabsChildrenIdReportRoute = TabsChildrenIdReportRouteImport.update({
   path: '/children/$id/report',
   getParentRoute: () => TabsRoute,
 } as any)
+const TabsChildrenIdPickupRoute = TabsChildrenIdPickupRouteImport.update({
+  id: '/children/$id/pickup',
+  path: '/children/$id/pickup',
+  getParentRoute: () => TabsRoute,
+} as any)
 const TabsChildrenIdPersonalRoute = TabsChildrenIdPersonalRouteImport.update({
   id: '/children/$id/personal',
   path: '/children/$id/personal',
@@ -212,6 +218,7 @@ export interface FileRoutesByFullPath {
   '/children/$id/history': typeof TabsChildrenIdHistoryRoute
   '/children/$id/medical': typeof TabsChildrenIdMedicalRoute
   '/children/$id/personal': typeof TabsChildrenIdPersonalRoute
+  '/children/$id/pickup': typeof TabsChildrenIdPickupRoute
   '/children/$id/report': typeof TabsChildrenIdReportRoute
   '/children/$id/': typeof TabsChildrenIdIndexRoute
 }
@@ -242,6 +249,7 @@ export interface FileRoutesByTo {
   '/children/$id/history': typeof TabsChildrenIdHistoryRoute
   '/children/$id/medical': typeof TabsChildrenIdMedicalRoute
   '/children/$id/personal': typeof TabsChildrenIdPersonalRoute
+  '/children/$id/pickup': typeof TabsChildrenIdPickupRoute
   '/children/$id/report': typeof TabsChildrenIdReportRoute
   '/children/$id': typeof TabsChildrenIdIndexRoute
 }
@@ -274,6 +282,7 @@ export interface FileRoutesById {
   '/_tabs/children/$id/history': typeof TabsChildrenIdHistoryRoute
   '/_tabs/children/$id/medical': typeof TabsChildrenIdMedicalRoute
   '/_tabs/children/$id/personal': typeof TabsChildrenIdPersonalRoute
+  '/_tabs/children/$id/pickup': typeof TabsChildrenIdPickupRoute
   '/_tabs/children/$id/report': typeof TabsChildrenIdReportRoute
   '/_tabs/children/$id/': typeof TabsChildrenIdIndexRoute
 }
@@ -306,6 +315,7 @@ export interface FileRouteTypes {
     | '/children/$id/history'
     | '/children/$id/medical'
     | '/children/$id/personal'
+    | '/children/$id/pickup'
     | '/children/$id/report'
     | '/children/$id/'
   fileRoutesByTo: FileRoutesByTo
@@ -336,6 +346,7 @@ export interface FileRouteTypes {
     | '/children/$id/history'
     | '/children/$id/medical'
     | '/children/$id/personal'
+    | '/children/$id/pickup'
     | '/children/$id/report'
     | '/children/$id'
   id:
@@ -367,6 +378,7 @@ export interface FileRouteTypes {
     | '/_tabs/children/$id/history'
     | '/_tabs/children/$id/medical'
     | '/_tabs/children/$id/personal'
+    | '/_tabs/children/$id/pickup'
     | '/_tabs/children/$id/report'
     | '/_tabs/children/$id/'
   fileRoutesById: FileRoutesById
@@ -553,6 +565,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TabsChildrenIdReportRouteImport
       parentRoute: typeof TabsRoute
     }
+    '/_tabs/children/$id/pickup': {
+      id: '/_tabs/children/$id/pickup'
+      path: '/children/$id/pickup'
+      fullPath: '/children/$id/pickup'
+      preLoaderRoute: typeof TabsChildrenIdPickupRouteImport
+      parentRoute: typeof TabsRoute
+    }
     '/_tabs/children/$id/personal': {
       id: '/_tabs/children/$id/personal'
       path: '/children/$id/personal'
@@ -622,6 +641,7 @@ interface TabsRouteChildren {
   TabsChildrenIdHistoryRoute: typeof TabsChildrenIdHistoryRoute
   TabsChildrenIdMedicalRoute: typeof TabsChildrenIdMedicalRoute
   TabsChildrenIdPersonalRoute: typeof TabsChildrenIdPersonalRoute
+  TabsChildrenIdPickupRoute: typeof TabsChildrenIdPickupRoute
   TabsChildrenIdReportRoute: typeof TabsChildrenIdReportRoute
   TabsChildrenIdIndexRoute: typeof TabsChildrenIdIndexRoute
 }
@@ -650,6 +670,7 @@ const TabsRouteChildren: TabsRouteChildren = {
   TabsChildrenIdHistoryRoute: TabsChildrenIdHistoryRoute,
   TabsChildrenIdMedicalRoute: TabsChildrenIdMedicalRoute,
   TabsChildrenIdPersonalRoute: TabsChildrenIdPersonalRoute,
+  TabsChildrenIdPickupRoute: TabsChildrenIdPickupRoute,
   TabsChildrenIdReportRoute: TabsChildrenIdReportRoute,
   TabsChildrenIdIndexRoute: TabsChildrenIdIndexRoute,
 }

@@ -486,6 +486,113 @@ export const getEmergency = (id: string): EmergencyInfo => {
   );
 };
 
+export type PickupPerson = {
+  name: string;
+  relation: string;
+  phone: string;
+  photo?: string;
+  idVerified: boolean;
+  authorized: boolean;
+  notes?: string;
+};
+
+export type PickupEvent = {
+  date: string;
+  time: string;
+  by: string;
+  status: "completed" | "scheduled" | "missed";
+  note?: string;
+};
+
+export type PickupInfo = {
+  defaultTime: string;
+  defaultPerson: string;
+  authorizedPeople: PickupPerson[];
+  blockedPeople: { name: string; reason: string }[];
+  upcoming?: PickupEvent;
+  history: PickupEvent[];
+  requiresPhotoId: boolean;
+  requiresPassword: boolean;
+  password?: string;
+  custodyNotes: string;
+};
+
+export const pickupByChild: Record<string, PickupInfo> = {
+  lea: {
+    defaultTime: "17:30",
+    defaultPerson: "Marie Dupont",
+    authorizedPeople: [
+      { name: "Marie Dupont", relation: "Mère", phone: "+33 6 12 34 56 78", idVerified: true, authorized: true },
+      { name: "Pierre Dupont", relation: "Père", phone: "+33 6 11 22 33 44", idVerified: true, authorized: true },
+      { name: "Jeanne Dupont", relation: "Grand-mère", phone: "+33 6 88 77 66 55", idVerified: true, authorized: true, notes: "Uniquement les lundis et mardis." },
+    ],
+    blockedPeople: [],
+    upcoming: { date: "2026-06-18", time: "17:30", by: "Marie Dupont", status: "scheduled" },
+    history: [
+      { date: "2026-06-17", time: "17:42", by: "Marie Dupont", status: "completed" },
+      { date: "2026-06-16", time: "18:05", by: "Pierre Dupont", status: "completed", note: "Légèrement en retard." },
+      { date: "2026-06-15", time: "17:25", by: "Jeanne Dupont", status: "completed" },
+    ],
+    requiresPhotoId: false,
+    requiresPassword: true,
+    password: "Coccinelle",
+    custodyNotes: "Garde partagée — semaines paires chez la mère.",
+  },
+  noah: {
+    defaultTime: "17:15",
+    defaultPerson: "Julien Bernard",
+    authorizedPeople: [
+      { name: "Julien Bernard", relation: "Père", phone: "+33 6 98 76 54 32", idVerified: true, authorized: true },
+      { name: "Camille Bernard", relation: "Mère", phone: "+33 6 14 25 36 47", idVerified: true, authorized: true },
+    ],
+    blockedPeople: [],
+    upcoming: { date: "2026-06-18", time: "17:15", by: "Julien Bernard", status: "scheduled" },
+    history: [
+      { date: "2026-06-17", time: "17:18", by: "Camille Bernard", status: "completed" },
+      { date: "2026-06-16", time: "17:10", by: "Julien Bernard", status: "completed" },
+    ],
+    requiresPhotoId: false,
+    requiresPassword: false,
+    custodyNotes: "—",
+  },
+  ines: {
+    defaultTime: "17:45",
+    defaultPerson: "Sophie Moreau",
+    authorizedPeople: [
+      { name: "Sophie Moreau", relation: "Mère", phone: "+33 6 55 44 33 22", idVerified: true, authorized: true },
+      { name: "Antoine Moreau", relation: "Père", phone: "+33 6 23 45 67 89", idVerified: true, authorized: true },
+      { name: "Lucie Moreau", relation: "Tante", phone: "+33 6 67 89 01 23", idVerified: false, authorized: false, notes: "ID à fournir avant autorisation." },
+    ],
+    blockedPeople: [
+      { name: "Marc Dubois", reason: "Décision de justice — interdiction de pickup." },
+    ],
+    upcoming: { date: "2026-06-18", time: "17:45", by: "Sophie Moreau", status: "scheduled" },
+    history: [
+      { date: "2026-06-17", time: "17:50", by: "Sophie Moreau", status: "completed" },
+      { date: "2026-06-16", time: "—", by: "Antoine Moreau", status: "missed", note: "Absence non excusée." },
+    ],
+    requiresPhotoId: true,
+    requiresPassword: true,
+    password: "Étoile",
+    custodyNotes: "Pickup uniquement par parents — pièce d'identité requise.",
+  },
+};
+
+export const getPickup = (id: string): PickupInfo => {
+  return (
+    pickupByChild[id] ?? {
+      defaultTime: "—",
+      defaultPerson: "—",
+      authorizedPeople: [],
+      blockedPeople: [],
+      history: [],
+      requiresPhotoId: false,
+      requiresPassword: false,
+      custodyNotes: "—",
+    }
+  );
+};
+
 export const getThread = (id: string) => threads.find((t) => t.id === id);
 export const getReportForChild = (childId: string) =>
   reportsToday.find((r) => r.childId === childId);
